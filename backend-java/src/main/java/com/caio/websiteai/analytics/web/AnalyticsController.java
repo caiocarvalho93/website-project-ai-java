@@ -4,6 +4,7 @@ import com.caio.websiteai.ai.dto.AiIntelligenceReport;
 import com.caio.websiteai.ai.service.AiIntelligenceService;
 import com.caio.websiteai.analytics.dto.TrendingTopicDto;
 import com.caio.websiteai.analytics.service.TrendingTopicService;
+import com.caio.websiteai.game.service.GameLeaderboardService;
 import com.caio.websiteai.news.dto.Article;
 import com.caio.websiteai.news.dto.CountryNewsResponse;
 import com.caio.websiteai.news.service.NewsService;
@@ -28,6 +29,7 @@ public class AnalyticsController {
     private final TrendingTopicService trendingTopicService;
     private final AiIntelligenceService aiIntelligenceService;
     private final NewsService newsService;
+    private final GameLeaderboardService gameLeaderboardService;
 
     @GetMapping("/trending-topics")
     public ResponseEntity<List<TrendingTopicDto>> trendingTopics() {
@@ -47,5 +49,10 @@ public class AnalyticsController {
                 .collect(Collectors.toList());
         AiIntelligenceReport report = aiIntelligenceService.generateReport(countryCode.toLowerCase(), headlines);
         return ResponseEntity.ok(report);
+    }
+
+    @GetMapping("/ai-leaderboard")
+    public ResponseEntity<List<GameLeaderboardService.LeaderboardEntry>> aiLeaderboard() {
+        return ResponseEntity.ok(gameLeaderboardService.getEnhancedLeaderboard());
     }
 }

@@ -121,6 +121,15 @@ public class ArticleEntity {
     @Column(name = "archived_at")
     private OffsetDateTime archivedAt;
 
+    @Column(name = "rating_count")
+    private Integer ratingCount;
+
+    @Column(name = "rating_total")
+    private Integer ratingTotal;
+
+    @Column(name = "average_rating", precision = 3, scale = 2)
+    private BigDecimal averageRating;
+
     @PrePersist
     void onCreate() {
         OffsetDateTime now = OffsetDateTime.now();
@@ -134,6 +143,12 @@ public class ArticleEntity {
         }
         if (shareCount == null) {
             shareCount = 0;
+        }
+        if (ratingCount == null) {
+            ratingCount = 0;
+        }
+        if (ratingTotal == null) {
+            ratingTotal = 0;
         }
     }
 

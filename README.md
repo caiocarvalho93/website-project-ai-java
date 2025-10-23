@@ -2,13 +2,13 @@
 
 A full-stack application for AI news aggregation and intelligence analysis with country-specific filtering and real-time updates.
 
-## 📜 Master Directive for Codex
+## 📜 Backend Migration Guidelines
 
-For large-scale refactors or migrations, follow the workflow described in
-[`backend-java/MASTER_DIRECTIVE_FOR_CODEX.md`](backend-java/MASTER_DIRECTIVE_FOR_CODEX.md)
-before making changes. It outlines the unified Spring Boot migration plan,
-required build commands, and post-migration verification checklist that Codex
-must execute.
+For significant refactors or migrations, document the scope and desired
+outcomes in the issue or pull request description before starting work. Ensure
+the resulting Spring Boot project, PostgreSQL schema, and React integration are
+kept in sync, and capture any verification steps (build commands, smoke tests,
+and API checks) so other contributors can reproduce the results locally.
 
 ## 🏗️ Project Structure
 
