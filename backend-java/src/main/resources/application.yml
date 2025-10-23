@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: ${PORT:3000}
 
 spring:
   application:
@@ -7,9 +7,9 @@ spring:
   cache:
     type: caffeine
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL:}
-    username: ${SPRING_DATASOURCE_USERNAME:}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
     password: ${SPRING_DATASOURCE_PASSWORD:}
     hikari:
       maximum-pool-size: ${SPRING_DATASOURCE_MAX_POOL_SIZE:10}
@@ -22,6 +22,7 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
         jdbc:
           lob:
             non_contextual_creation: true
@@ -29,6 +30,9 @@ spring:
   jackson:
     serialization:
       write-dates-as-timestamps: false
+  h2:
+    console:
+      enabled: true
 
 news:
   api:
