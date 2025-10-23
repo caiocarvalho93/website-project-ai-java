@@ -2,6 +2,14 @@
 
 A full-stack application for AI news aggregation and intelligence analysis with country-specific filtering and real-time updates.
 
+## 📜 Backend Migration Guidelines
+
+For significant refactors or migrations, document the scope and desired
+outcomes in the issue or pull request description before starting work. Ensure
+the resulting Spring Boot project, PostgreSQL schema, and React integration are
+kept in sync, and capture any verification steps (build commands, smoke tests,
+and API checks) so other contributors can reproduce the results locally.
+
 ## 🏗️ Project Structure
 
 ```
@@ -11,6 +19,9 @@ ai-intelligence-network/
 │   ├── database.js       # PostgreSQL database layer
 │   ├── server.js         # Express server
 │   └── package.json      # Backend dependencies
+├── backend-java/         # Spring Boot API server
+│   ├── src/              # Java source & resources
+│   └── pom.xml           # Maven build file
 ├── frontend/             # React dashboard
 │   ├── src/
 │   │   ├── components/   # React components
@@ -28,6 +39,7 @@ ai-intelligence-network/
 
 ### Prerequisites
 - Node.js 18+
+- Java 17+
 - PostgreSQL database
 - NewsAPI & NewsData.io API keys
 
@@ -72,6 +84,10 @@ VITE_API_BASE=http://localhost:8080
 - `npm run dev:backend` - Start backend server
 - `npm run build:backend` - Build backend
 - `npm run test:backend` - Run backend tests
+
+### Java Backend
+- `cd backend-java && mvn spring-boot:run` - Start Spring Boot server
+- `cd backend-java && mvn test` - Run Java backend tests
 
 ### Frontend Only
 - `npm run dev:frontend` - Start frontend dev server
