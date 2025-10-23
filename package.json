@@ -1,0 +1,35 @@
+{
+  "name": "ai-intelligence-network",
+  "version": "1.0.0",
+  "description": "AI Intelligence Network - Full Stack Application",
+  "main": "backend/server.js",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start": "npm run start --workspace=backend",
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=frontend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "vercel-build": "npm run build --workspace=frontend",
+    "preview": "npm run preview --workspace=frontend",
+    "deploy": "npm run build && vercel --prod",
+    "test": "echo 'Tests not configured yet'",
+    "lint": "echo 'Linting not configured yet'",
+    "type-check": "npm run type-check --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "start:backend": "npm run start --workspace=backend",
+    "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend"
+  },
+  "devDependencies": {},
+
+  "engines": {
+    "node": "22.x",
+    "npm": ">=10.0.0"
+  },
+  "overrides": {
+    "rollup": "^4.0.0"
+  }
+}

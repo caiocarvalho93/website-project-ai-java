@@ -1,0 +1,37 @@
+{
+  "name": "ai-intelligence-backend",
+  "version": "1.0.0",
+  "description": "AI Intelligence Network - Backend API",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "test": "jest",
+    "test:startup": "node test-startup.js",
+    "test:api-keys": "node test-dual-api-keys.js",
+    "deploy": "node deploy.js",
+    "build": "echo 'No build step required for Node.js'",
+    "migrate": "node deploy.js",
+    "lint": "echo 'Linting not configured yet'",
+    "setup-db": "node setup-local-postgres.js"
+  },
+  "dependencies": {
+    "axios": "^1.12.2",
+    "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "newsapi": "^2.4.1",
+    "node-cron": "^3.0.3",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=20.18.1",
+    "npm": ">=10.0.0"
+  }
+}

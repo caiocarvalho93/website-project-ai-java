@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NewsFeed Test</title>
+    <script>
+        // Test the API endpoint
+        console.log('Testing API endpoint...');
+        
+        fetch('https://website-project-ai-production.up.railway.app/api/global-news')
+            .then(r => r.json())
+            .then(data => {
+                console.log('✅ API Response:', data);
+                console.log('📊 Total articles:', data.totalArticles);
+                console.log('🌍 Countries:', Object.keys(data.countries || {}));
+                console.log('📰 Global articles:', data.global?.length || 0);
+            })
+            .catch(error => {
+                console.error('❌ API Error:', error);
+            });
+
+        // Test environment detection
+        console.log('🔍 Environment check:');
+        console.log('PROD mode:', window.location.protocol === 'https:');
+        console.log('Hostname:', window.location.hostname);
+        
+        // Test API base URL logic
+        const getApiBase = () => {
+            if (window.location.protocol === 'https:' && window.location.hostname !== 'localhost') {
+                return "https://website-project-ai-production.up.railway.app";
+            }
+            return window.location.origin;
+        };
+        
+        console.log('🌍 API Base URL:', getApiBase());
+    </script>
+</head>
+<body>
+    <h1>NewsFeed Component Test</h1>
+    <p>Check browser console for test results</p>
+    <p>✅ Fixed Issues:</p>
+    <ul>
+        <li>❌ Missing axios import → ✅ Using fetch instead</li>
+        <li>❌ Complex error handling → ✅ Simplified try/catch</li>
+        <li>❌ Inconsistent data access → ✅ Safe optional chaining</li>
+        <li>❌ API_BASE issues → ✅ Dynamic URL generation</li>
+        <li>❌ Missing CSS classes → ✅ Added ai-coverage-card, badge-ai</li>
+        <li>❌ No error display → ✅ Proper error states</li>
+    </ul>
+</body>
+</html>
