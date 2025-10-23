@@ -137,3 +137,5 @@ data/
 # Docker
 .dockerignore
 Dockerfile.local
+# Java backend build artifacts
+backend-java/target/
