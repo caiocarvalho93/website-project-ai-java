@@ -1,12 +1,44 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   GAME_COUNTRIES,
   getRegions,
   getCountryByRegion,
 } from "../config/gameCountries";
+
+// ---- API CLIENT HELPERS ----
+const API_BASE =
+  import.meta.env.VITE_API_URL?.trim() ||
+  (typeof window !== "undefined" &&
+  window.location.hostname.includes("vercel.app")
+    ? "https://website-project-ai-production.up.railway.app"
+    : "http://localhost:3000"); // LOCAL BACKEND
+
+// Robust retry so Railway wake-ups don't blank the UI
+async function fetchWithRetry(url, options = {}, retries = 3, delayMs = 1500) {
+  let lastErr;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, {
+        method: options.method || "GET",
+        headers: { Accept: "application/json", ...(options.headers || {}) },
+        mode: "cors",
+        cache: "no-cache",
+        body: options.body ? JSON.stringify(options.body) : undefined,
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      lastErr = err;
+      if (attempt < retries) {
+        console.warn(`🔄 Retry ${attempt}/${retries}: ${err.message}`);
+        await new Promise((r) => setTimeout(r, delayMs));
+      }
+    }
+  }
+  throw lastErr || new Error("Network error");
+}
 
 // Use the comprehensive game countries configuration
 
@@ -27,13 +59,46 @@ export default function AIFansRace() {
 
   const fetchLeaderboard = async () => {
     try {
-      const baseUrl = import.meta.env.PROD
-        ? "https://website-project-ai-production.up.railway.app"
-        : "";
+      console.log(
+        "🔍 FETCHING LEADERBOARD FROM:",
+        `${API_BASE}/api/fans-race/leaderboard`
+      );
+      const response = await fetchWithRetry(
+        `${API_BASE}/api/fans-race/leaderboard`
+      );
 
-      const response = await axios.get(`${baseUrl}/api/fans-race/leaderboard`);
-      setLeaderboard(response.data.leaderboard);
-      setTotalSubmissions(response.data.totalSubmissions);
+      // Create full leaderboard with all countries
+      const dbLeaderboard = response.leaderboard || [];
+      const topCountries = [
+        "US",
+        "DE",
+        "ES",
+        "GB",
+        "FR",
+        "JP",
+        "KR",
+        "IN",
+        "CA",
+        "BR",
+        "CN",
+      ];
+
+      // REAL DATA ONLY - Include all countries with their actual scores
+      const fullLeaderboard = topCountries.map((countryCode) => {
+        const existing = dbLeaderboard.find(
+          (item) => item.country === countryCode
+        );
+        return existing || { country: countryCode, score: 0 };
+      });
+
+      // Sort by score (China will show ??? rank regardless of actual position)
+      fullLeaderboard.sort((a, b) => b.score - a.score);
+
+      console.log("🔍 FORCED LEADERBOARD WITH CHINA:", fullLeaderboard);
+      console.log("🇨🇳 CHINA FORCED IN:", fullLeaderboard.find((c) => c.country === "CN"));
+
+      setLeaderboard(fullLeaderboard);
+      setTotalSubmissions(response.totalSubmissions);
       setLoading(false);
     } catch (error) {
       console.warn("Fans race leaderboard pending:", error.message);
@@ -245,25 +310,25 @@ export default function AIFansRace() {
               }}
               onClick={async () => {
                 try {
-                  const baseUrl = import.meta.env.PROD
-                    ? "https://website-project-ai-production.up.railway.app"
-                    : "";
-
-                  const response = await axios.post(
-                    `${baseUrl}/api/fans-race/submit`,
+                  const response = await fetchWithRetry(
+                    `${API_BASE}/api/fans-race/submit`,
                     {
-                      url: submitUrl,
-                      country: selectedCountry,
-                      userId: "user-" + Date.now(),
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: {
+                        url: submitUrl,
+                        country: selectedCountry,
+                        userId: "user-" + Date.now(),
+                      },
                     }
                   );
 
                   // Epic success message
                   const epicMessages = [
-                    `🎆 LEGENDARY! +${response.data.pointsAwarded} points for ${COUNTRY_NAMES[selectedCountry]}! 🎆`,
-                    `⚡ POWER SURGE! ${COUNTRY_NAMES[selectedCountry]} gains +${response.data.pointsAwarded} points! ⚡`,
-                    `🚀 ROCKET BOOST! +${response.data.pointsAwarded} points to ${COUNTRY_NAMES[selectedCountry]}! 🚀`,
-                    `🔥 UNSTOPPABLE! ${COUNTRY_NAMES[selectedCountry]} scores +${response.data.pointsAwarded} points! 🔥`,
+                    `🎆 LEGENDARY! +${response.pointsAwarded} points for ${GAME_COUNTRIES[selectedCountry]?.name}! 🎆`,
+                    `⚡ POWER SURGE! ${GAME_COUNTRIES[selectedCountry]?.name} gains +${response.pointsAwarded} points! ⚡`,
+                    `🚀 ROCKET BOOST! +${response.pointsAwarded} points to ${GAME_COUNTRIES[selectedCountry]?.name}! 🚀`,
+                    `🔥 UNSTOPPABLE! ${GAME_COUNTRIES[selectedCountry]?.name} scores +${response.pointsAwarded} points! 🔥`,
                   ];
 
                   const randomMessage =
@@ -272,7 +337,7 @@ export default function AIFansRace() {
                     ];
                   alert(
                     randomMessage +
-                      `\n\n🏆 ${GAME_COUNTRIES[selectedCountry]?.name} Total: ${response.data.newScore} points`
+                      `\n\n🏆 ${GAME_COUNTRIES[selectedCountry]?.name} Total: ${response.newScore} points`
                   );
                   setSubmitUrl("");
                   fetchLeaderboard(); // Refresh leaderboard
@@ -331,14 +396,22 @@ export default function AIFansRace() {
                   className="card"
                   style={{
                     background:
-                      index < 3
+                      country.country === "CN"
+                        ? "linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 223, 0, 0.1), rgba(255, 215, 0, 0.05))"
+                        : index < 3
                         ? `linear-gradient(135deg, ${getScoreColor(
                             country.score
                           )}15, ${getScoreColor(country.score)}05)`
                         : undefined,
                     border:
-                      index < 3
+                      country.country === "CN"
+                        ? "2px solid rgba(255, 215, 0, 0.6)"
+                        : index < 3
                         ? `2px solid ${getScoreColor(country.score)}40`
+                        : undefined,
+                    boxShadow:
+                      country.country === "CN"
+                        ? "0 8px 25px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 215, 0, 0.1)"
                         : undefined,
                   }}
                 >
@@ -359,11 +432,38 @@ export default function AIFansRace() {
                           <span style={{ fontSize: "1.5rem" }}>
                             {GAME_COUNTRIES[country.country]?.flag}
                           </span>
-                          <div className="subheading">
+                          <div
+                            className="subheading"
+                            style={
+                              country.country === "CN"
+                                ? {
+                                    color: "#FFD700",
+                                    fontWeight: "700",
+                                    textShadow:
+                                      "0 0 10px rgba(255, 215, 0, 0.8)",
+                                  }
+                                : {}
+                            }
+                          >
                             {GAME_COUNTRIES[country.country]?.name}
                           </div>
                         </div>
-                        <div className="text-muted">Rank #{index + 1}</div>
+                        <div
+                          className="text-muted"
+                          style={
+                            country.country === "CN"
+                              ? {
+                                  color: "#FFD700",
+                                  fontWeight: "700",
+                                  textShadow: "0 0 10px rgba(255, 215, 0, 0.8)",
+                                }
+                              : {}
+                          }
+                        >
+                          {country.country === "CN"
+                            ? "Rank #???"
+                            : `Rank #${index + 1}`}
+                        </div>
                       </div>
                     </div>
 

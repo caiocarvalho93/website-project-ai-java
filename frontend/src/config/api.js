@@ -9,12 +9,12 @@ const API_BASE = (() => {
   if (import.meta.env.VITE_API_BASE) {
     return import.meta.env.VITE_API_BASE;
   }
-  
+
   // 2. Detect Vercel production environment
-  if (import.meta.env.PROD || window.location.hostname.includes('vercel.app')) {
+  if (import.meta.env.PROD || window.location.hostname.includes("vercel.app")) {
     return "https://website-project-ai-production.up.railway.app";
   }
-  
+
   // 3. Local development
   return "http://localhost:3000";
 })();

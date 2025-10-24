@@ -1,0 +1,32 @@
+{
+  "name": "cai-assistant",
+  "version": "1.0.0",
+  "description": "CAI - Custom AI Assistant Server",
+  "type": "module",
+  "main": "cai-server.js",
+  "scripts": {
+    "start": "node cai-server.js",
+    "dev": "nodemon cai-server.js",
+    "test": "echo \"CAI Assistant - No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "ai",
+    "assistant",
+    "openai",
+    "chat",
+    "development"
+  ],
+  "author": "Your Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "openai": "^4.20.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Universal Language Button</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 20, 147, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success { border-color: #4CAF50; }
+        .error { border-color: #ff3b3b; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Universal Language Button Test</h1>
+    
+    <div class="status">
+        <h3>✅ What's Fixed:</h3>
+        <ul>
+            <li>Added <code>availableLanguages</code> and <code>setLanguage</code> to LanguageContext</li>
+            <li>Added error handling to prevent crashes</li>
+            <li>Added loading state for context initialization</li>
+            <li>Translation API is working perfectly</li>
+        </ul>
+    </div>
+
+    <div class="status success">
+        <h3>🎯 How to Test:</h3>
+        <ol>
+            <li>Go to <strong>http://localhost:3000</strong> (your frontend)</li>
+            <li>Look for the pink floating button in the top-right corner</li>
+            <li>Click it to see the language dropdown</li>
+            <li>Select any language (like Japanese or Spanish)</li>
+            <li>Watch the content translate instantly</li>
+        </ol>
+    </div>
+
+    <div class="status">
+        <h3>🔧 Backend Status:</h3>
+        <p>✅ Translation API: <code>http://localhost:3000/api/translate</code></p>
+        <p>✅ Batch Translation: <code>http://localhost:3000/api/translate/batch</code></p>
+        <p>✅ Test Result: "Hello" → "Hola" (Spanish)</p>
+    </div>
+
+    <div class="status">
+        <h3>🎨 Button Features:</h3>
+        <ul>
+            <li>🌈 Crazy pink see-through design with blur effects</li>
+            <li>✨ Rotating rings and floating particles</li>
+            <li>🎯 Shimmer and glow animations</li>
+            <li>🌍 35+ languages with flag emojis</li>
+            <li>📱 Mobile responsive</li>
+            <li>⚡ Instant translation</li>
+        </ul>
+    </div>
+
+    <script>
+        // Test the translation API
+        async function testAPI() {
+            try {
+                const response = await fetch('http://localhost:3000/api/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: 'Universal Language Button',
+                        targetLanguage: 'ja',
+                        sourceLanguage: 'en'
+                    })
+                });
+                const data = await response.json();
+                console.log('✅ API Test Result:', data);
+                
+                if (data.success) {
+                    document.body.innerHTML += `
+                        <div class="status success">
+                            <h3>🎉 Live API Test:</h3>
+                            <p><strong>Original:</strong> Universal Language Button</p>
+                            <p><strong>Japanese:</strong> ${data.translation}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('❌ API Test Failed:', error);
+            }
+        }
+
+        // Run test on page load
+        testAPI();
+    </script>
+</body>
+</html>

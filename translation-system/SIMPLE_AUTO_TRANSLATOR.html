@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Simple Auto-Translator Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .test-button {
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.6), rgba(0, 212, 255, 0.6));
+            border: 3px solid rgba(255, 20, 147, 0.8);
+            border-radius: 25px;
+            padding: 20px 40px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .test-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 20, 147, 0.4);
+        }
+        
+        .content {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Auto-Translator Test Page</h1>
+        <p>This page simulates an external website (like a news article)</p>
+        
+        <div class="content">
+            <h2>Sample News Article</h2>
+            <p>This is a sample news article that should be automatically translated when you visit it from your main website after selecting a language.</p>
+            
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+            
+            <p>The translation system should show a "🌍 Translating..." box and then translate this content to your selected language.</p>
+        </div>
+        
+        <button class="test-button" onclick="testTranslation()">
+            🚀 Test Translation Manually
+        </button>
+        
+        <div id="status" style="margin-top: 20px; font-size: 14px; opacity: 0.8;"></div>
+    </div>
+
+    <script>
+        // Check if auto-translation should run
+        function checkAutoTranslation() {
+            const targetLang = localStorage.getItem('universalTranslatorLang');
+            const isActive = localStorage.getItem('universalTranslatorActive');
+            const status = document.getElementById('status');
+            
+            if (isActive === 'true' && targetLang && targetLang !== 'en') {
+                status.innerHTML = `🌍 Auto-translation active for: ${targetLang.toUpperCase()}`;
+                
+                // Simulate being on an external website - run auto-translation
+                setTimeout(() => {
+                    runAutoTranslation(targetLang);
+                }, 1000);
+            } else {
+                status.innerHTML = '❌ No active translation found. Select a language in your main website first.';
+            }
+        }
+        
+        // Run the auto-translation
+        function runAutoTranslation(targetLang) {
+            console.log('🌍 Running auto-translation to:', targetLang);
+            
+            // Check if already translated
+            if (document.getElementById('universal-translator-element')) {
+                return;
+            }
+            
+            // Show "🌍 Translating..." indicator
+            const indicator = document.createElement('div');
+            indicator.id = 'universal-translator-element';
+            indicator.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 999999;
+                background: linear-gradient(135deg, rgba(255, 20, 147, 0.9), rgba(0, 212, 255, 0.9));
+                border: 2px solid rgba(255, 20, 147, 1);
+                border-radius: 15px;
+                padding: 12px 18px;
+                color: white;
+                font-weight: bold;
+                font-size: 14px;
+                animation: translatePulse 1s ease-in-out infinite;
+                box-shadow: 0 5px 20px rgba(255, 20, 147, 0.4);
+            `;
+            indicator.innerHTML = '🌍 Translating...';
+            document.body.appendChild(indicator);
+            
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes translatePulse {
+                    0%, 100% { transform: scale(1); opacity: 1; }
+                    50% { transform: scale(1.05); opacity: 0.8; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Start translation
+            setTimeout(() => {
+                startGoogleTranslate(targetLang, indicator);
+            }, 1000);
+        }
+        
+        // Start Google Translate
+        function startGoogleTranslate(targetLang, indicator) {
+            // Create Google Translate element
+            const translateDiv = document.createElement('div');
+            translateDiv.id = 'google_translate_element';
+            translateDiv.style.cssText = 'position:fixed;top:60px;right:20px;z-index:999998;background:rgba(255,20,147,0.1);padding:10px;border-radius:10px;border:2px solid rgba(255,20,147,0.3);';
+            document.body.appendChild(translateDiv);
+            
+            // Load Google Translate
+            const script = document.createElement('script');
+            script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            
+            window.googleTranslateElementInit = function() {
+                new google.translate.TranslateElement({
+                    pageLanguage: 'auto',
+                    includedLanguages: 'en,es,fr,de,it,pt,ru,ja,ko,zh,ar,hi,tr,pl,nl,sv,da,no,fi,cs,hu,ro,bg,hr,sk,sl,et,lv,lt,mt,el,cy,ga,eu,ca,gl',
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                }, 'google_translate_element');
+                
+                // Auto-select the target language
+                setTimeout(() => {
+                    const select = document.querySelector('.goog-te-combo');
+                    if (select) {
+                        select.value = targetLang;
+                        select.dispatchEvent(new Event('change'));
+                        
+                        // Update indicator
+                        indicator.innerHTML = '✅ Translated!';
+                        indicator.style.animation = 'none';
+                        
+                        setTimeout(() => {
+                            indicator.style.opacity = '0.7';
+                            indicator.innerHTML = '🌍 Translated';
+                        }, 2000);
+                        
+                        // Update status
+                        document.getElementById('status').innerHTML = `✅ Page translated to ${targetLang.toUpperCase()}!`;
+                    } else {
+                        indicator.innerHTML = '⚠️ Translation failed';
+                        setTimeout(() => indicator.remove(), 3000);
+                    }
+                }, 2000);
+            };
+            
+            document.head.appendChild(script);
+        }
+        
+        // Manual test function
+        function testTranslation() {
+            const targetLang = localStorage.getItem('universalTranslatorLang') || 'es';
+            runAutoTranslation(targetLang);
+        }
+        
+        // Check for auto-translation on page load
+        window.addEventListener('load', () => {
+            setTimeout(checkAutoTranslation, 500);
+        });
+    </script>
+</body>
+</html>

@@ -21,7 +21,12 @@
     "type-check": "npm run type-check --workspace=frontend",
     "dev:backend": "npm run dev --workspace=backend",
     "start:backend": "npm run start --workspace=backend",
-    "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend"
+    "install:all": "npm install && npm install --workspace=frontend && npm install --workspace=backend",
+    "cai:start": "node start-cai.js",
+    "cai:dev": "cd backend/cai && npm run dev",
+    "cai:install": "cd backend/cai && npm install",
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev\" \"npm run cai:dev\"",
+    "start:all": "concurrently \"npm run start:backend\" \"npm run cai:start\""
   },
   "devDependencies": {},
 

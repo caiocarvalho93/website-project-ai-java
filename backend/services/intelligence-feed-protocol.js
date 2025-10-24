@@ -17,7 +17,7 @@ export async function getCountryNews(country) {
 
 export async function getGlobalNews() {
   try {
-    const articles = await getArticles(null, 50);
+    const articles = await getArticles(null, 300);
     return articles.map((article) => ({
       ...article,
       intelligence_grade: true,

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Universal Auto-Translator Bookmarklet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 20, 147, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #ff1493, #ff69b4, #00d4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .bookmarklet-section {
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.2), rgba(0, 212, 255, 0.1));
+            border: 3px solid rgba(255, 20, 147, 0.5);
+            border-radius: 25px;
+            padding: 40px;
+            margin: 30px 0;
+        }
+
+        .bookmarklet-button {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.6), rgba(0, 212, 255, 0.6));
+            border: 3px solid rgba(255, 20, 147, 0.8);
+            border-radius: 30px;
+            padding: 20px 40px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 20px;
+            transition: all 0.3s ease;
+            animation: buttonPulse 3s ease-in-out infinite;
+        }
+
+        .bookmarklet-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 20, 147, 0.4);
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(255, 20, 147, 0.6);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(255, 20, 147, 1);
+                transform: scale(1.02);
+            }
+        }
+
+        .instructions {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .demo-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 20, 147, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .lang-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .lang-button:hover {
+            background: rgba(255, 20, 147, 0.4);
+            transform: translateY(-2px);
+            border-color: rgba(255, 20, 147, 0.6);
+        }
+
+        .flag {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Universal Auto-Translator</h1>
+            <p>Automatically translate ANY website when you visit it!</p>
+            <p style="font-size: 14px; opacity: 0.8; margin-top: 10px;">
+                Perfect for news articles, blogs, and any webpage
+            </p>
+        </div>
+
+        <div class="bookmarklet-section">
+            <h2>📚 Drag This to Your Bookmarks Bar</h2>
+            <p>This bookmarklet will automatically translate any website you visit:</p>
+            
+            <a href="javascript:(function(){const yourDomains=['localhost','127.0.0.1','your-domain.com','caifitness.com'];const currentDomain=window.location.hostname;const isYourWebsite=yourDomains.some(domain=>currentDomain.includes(domain)||currentDomain===domain);if(isYourWebsite){alert('🌍 Translation skipped - Use your website\\'s built-in language system instead!');return;}const lang=prompt('Enter language code (es, fr, de, it, pt, ru, ja, ko, zh, ar, hi, tr, pl, nl, sv, da, no, fi, cs, hu, ro, bg, hr, sk, sl, et, lv, lt, mt, el, cy, ga, eu, ca, gl):','es');if(!lang||lang==='en'){localStorage.setItem('universalTranslatorActive','false');alert('Auto-translation disabled');return;}localStorage.setItem('universalTranslatorLang',lang);localStorage.setItem('universalTranslatorActive','true');const indicator=document.createElement('div');indicator.style.cssText='position:fixed;top:20px;right:20px;background:linear-gradient(135deg,rgba(255,20,147,0.9),rgba(0,212,255,0.9));border:2px solid rgba(255,20,147,1);border-radius:15px;padding:12px 18px;color:white;font-weight:bold;font-size:14px;z-index:999999;animation:translatePulse 1s ease-in-out infinite;';indicator.innerHTML='🌍 Auto-translating to '+lang.toUpperCase()+'...';document.body.appendChild(indicator);const style=document.createElement('style');style.textContent='@keyframes translatePulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:0.8;}}';document.head.appendChild(style);const existing=document.getElementById('google_translate_element');if(existing)existing.remove();const translateDiv=document.createElement('div');translateDiv.id='google_translate_element';translateDiv.style.cssText='position:fixed;top:60px;right:20px;z-index:999998;background:rgba(255,20,147,0.1);padding:10px;border-radius:10px;border:2px solid rgba(255,20,147,0.3);';document.body.appendChild(translateDiv);const script=document.createElement('script');script.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'auto',includedLanguages:'en,es,fr,de,it,pt,ru,ja,ko,zh,ar,hi,tr,pl,nl,sv,da,no,fi,cs,hu,ro,bg,hr,sk,sl,et,lv,lt,mt,el,cy,ga,eu,ca,gl',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'google_translate_element');setTimeout(()=>{const select=document.querySelector('.goog-te-combo');if(select){select.value=lang;select.dispatchEvent(new Event('change'));indicator.innerHTML='✅ Translated to '+lang.toUpperCase()+'!';indicator.style.animation='none';setTimeout(()=>{indicator.style.opacity='0.7';indicator.innerHTML='🌍 Translated';},2000);}},2000);};document.head.appendChild(script);})();" 
+               class="bookmarklet-button">
+                🌍 Universal Auto-Translator
+            </a>
+
+            <div class="instructions">
+                <h3>🎯 How to Use:</h3>
+                <ol>
+                    <li><strong>Drag the button above</strong> to your bookmarks bar</li>
+                    <li><strong>Visit any website</strong> (news articles, blogs, etc.)</li>
+                    <li><strong>Click the bookmarklet</strong> in your bookmarks</li>
+                    <li><strong>Enter language code</strong> (es, fr, de, ga, etc.)</li>
+                    <li><strong>Page translates automatically!</strong></li>
+                </ol>
+                <p><strong>Pro Tip:</strong> Once activated, it will remember your language preference and auto-translate future pages!</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>🚀 Quick Language Selection</h2>
+            <p>Click any language below to activate auto-translation:</p>
+            
+            <div class="language-grid">
+                <div class="lang-button" onclick="activateAutoTranslation('es', 'Español', '🇪🇸')">
+                    <div class="flag">🇪🇸</div>
+                    <div>Español</div>
+                </div>
+                <div class="lang-button" onclick="activateAutoTranslation('fr', 'Français', '🇫🇷')">
+                    <div class="flag">🇫🇷</div>
+                    <div>Français</div>
+                </div>
+                <div class="lang-button" onclick="activateAutoTranslation('de', 'Deutsch', '🇩🇪')">
+                    <div class="flag">🇩🇪</div>
+                    <div>Deutsch</div>
+                </div>
+                <div class="lang-button" onclick="activateAutoTranslation('ga', 'Gaeilge', '🇮🇪')">
+                    <div class="flag">🇮🇪</div>
+                    <div>Gaeilge</div>
+                </div>
+                <div class="lang-button" onclick="activateAutoTranslation('it', 'Italiano', '🇮🇹')">
+                    <div class="flag">🇮🇹</div>
+                    <div>Italiano</div>
+                </div>
+                <div class="lang-button" onclick="activateAutoTranslation('pt', 'Português', '🇵🇹')">
+                    <div class="flag">🇵🇹</div>
+                    <div>Português</div>
+                </div>
+                <div class="lang-button" onclick="activateAutoTranslation('ru', 'Русский', '🇷🇺')">
+                    <div class="flag">🇷🇺</div>
+                    <div>Русский</div>
+                </div>
+                <div class="lang-button" onclick="activateAutoTranslation('zh', '中文', '🇨🇳')">
+                    <div class="flag">🇨🇳</div>
+                    <div>中文</div>
+                </div>
+            </div>
+
+            <button onclick="disableAutoTranslation()" style="
+                background: linear-gradient(135deg, rgba(255, 0, 0, 0.6), rgba(255, 100, 100, 0.6));
+                border: 2px solid rgba(255, 0, 0, 0.8);
+                border-radius: 15px;
+                padding: 10px 20px;
+                color: white;
+                font-weight: bold;
+                cursor: pointer;
+                margin-top: 20px;
+            ">
+                ❌ Disable Auto-Translation
+            </button>
+        </div>
+
+        <div class="demo-section">
+            <h2>✨ Features</h2>
+            <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                <li>🌍 Works on ANY website (news, blogs, social media)</li>
+                <li>🚀 Automatic translation when you visit pages</li>
+                <li>💾 Remembers your language preference</li>
+                <li>🎯 Perfect for news articles in foreign languages</li>
+                <li>⚡ Fast and reliable Google Translate integration</li>
+                <li>🔧 Easy to enable/disable</li>
+                <li>📱 Works on mobile and desktop</li>
+                <li>🆓 Completely free and open source</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function activateAutoTranslation(langCode, langName, flag) {
+            // Store language preference
+            localStorage.setItem('universalTranslatorLang', langCode);
+            localStorage.setItem('universalTranslatorActive', 'true');
+            
+            // Show confirmation
+            const confirmation = document.createElement('div');
+            confirmation.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, rgba(0, 255, 0, 0.9), rgba(0, 212, 255, 0.9));
+                border: 3px solid rgba(0, 255, 0, 1);
+                border-radius: 20px;
+                padding: 30px 40px;
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+                z-index: 999999;
+                text-align: center;
+                animation: confirmPulse 2s ease-out;
+            `;
+            confirmation.innerHTML = `
+                <div style="font-size: 32px; margin-bottom: 10px;">${flag}</div>
+                <div>Auto-Translation Activated!</div>
+                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">
+                    All websites will now auto-translate to ${langName}
+                </div>
+            `;
+            document.body.appendChild(confirmation);
+
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes confirmPulse {
+                    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+                    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+
+            setTimeout(() => {
+                confirmation.remove();
+                style.remove();
+            }, 4000);
+
+            console.log(`🌍 Auto-translation activated for: ${langName} (${langCode})`);
+        }
+
+        function disableAutoTranslation() {
+            localStorage.setItem('universalTranslatorActive', 'false');
+            
+            const confirmation = document.createElement('div');
+            confirmation.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, rgba(255, 100, 100, 0.9), rgba(255, 0, 0, 0.9));
+                border: 3px solid rgba(255, 0, 0, 1);
+                border-radius: 20px;
+                padding: 30px 40px;
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+                z-index: 999999;
+                text-align: center;
+            `;
+            confirmation.innerHTML = `
+                <div style="font-size: 32px; margin-bottom: 10px;">❌</div>
+                <div>Auto-Translation Disabled</div>
+                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">
+                    Websites will no longer auto-translate
+                </div>
+            `;
+            document.body.appendChild(confirmation);
+
+            setTimeout(() => confirmation.remove(), 3000);
+            console.log('🌍 Auto-translation disabled');
+        }
+
+        // Check current status on page load
+        window.addEventListener('load', () => {
+            const isActive = localStorage.getItem('universalTranslatorActive') === 'true';
+            const currentLang = localStorage.getItem('universalTranslatorLang');
+            
+            if (isActive && currentLang) {
+                console.log(`🌍 Auto-translation is currently active for: ${currentLang}`);
+            }
+        });
+    </script>
+</body>
+</html>

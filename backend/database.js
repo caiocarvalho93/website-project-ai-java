@@ -185,7 +185,7 @@ export async function storeArticles(country, articles) {
 /**
  * Retrieve articles with automatic fallback
  */
-export async function getArticles(country = null, limit = 50) {
+export async function getArticles(country = null, limit = 300) {
   if (pool) {
     try {
       const client = await pool.connect();
@@ -682,6 +682,35 @@ export async function initializeDatabase() {
       ('Financial Times', 'ft.com', 93, ARRAY['business tech', 'AI policy', 'economics'], 'newsapi', true),
       ('Wall Street Journal', 'wsj.com', 91, ARRAY['enterprise tech', 'AI business', 'markets'], 'newsapi', true)
       ON CONFLICT (name) DO NOTHING;
+    `);
+
+    // 17. TRANSLATIONS - Universal Language System
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS translations (
+        id SERIAL PRIMARY KEY,
+        original_text TEXT NOT NULL,
+        translated_text TEXT NOT NULL,
+        source_language VARCHAR(10) NOT NULL DEFAULT 'en',
+        target_language VARCHAR(10) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW(),
+        usage_count INTEGER DEFAULT 1,
+        ai_provider VARCHAR(50) DEFAULT 'openai',
+        confidence_score DECIMAL(3,2) DEFAULT 0.95,
+        UNIQUE(original_text, target_language, source_language)
+      );
+    `);
+
+    // Create indexes for translation performance
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_translations_lookup 
+      ON translations(original_text, target_language, source_language);
+      
+      CREATE INDEX IF NOT EXISTS idx_translations_language 
+      ON translations(target_language);
+      
+      CREATE INDEX IF NOT EXISTS idx_translations_usage 
+      ON translations(usage_count DESC);
     `);
     
     client.release();
@@ -1636,6 +1665,44 @@ export async function saveArticlesToDatabase(articles) {
       total: articles.length,
       error: "Database not available"
     };
+  }
+}
+
+// 🌍 UNIVERSAL LANGUAGES - Translation Database Functions
+export async function getTranslation(originalText, targetLanguage, sourceLanguage = 'en') {
+  if (!pool) return null;
+  
+  try {
+    const result = await pool.query(
+      `SELECT * FROM translations 
+       WHERE original_text = $1 AND target_language = $2 AND source_language = $3`,
+      [originalText, targetLanguage, sourceLanguage]
+    );
+    
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error getting translation:', error);
+    return null;
+  }
+}
+
+export async function saveTranslation(originalText, translatedText, targetLanguage, sourceLanguage = 'en') {
+  if (!pool) return false;
+  
+  try {
+    await pool.query(
+      `INSERT INTO translations (original_text, translated_text, target_language, source_language, created_at)
+       VALUES ($1, $2, $3, $4, NOW())
+       ON CONFLICT (original_text, target_language, source_language) 
+       DO UPDATE SET translated_text = $2, updated_at = NOW()`,
+      [originalText, translatedText, targetLanguage, sourceLanguage]
+    );
+    
+    console.log(`🌍 Translation saved: ${sourceLanguage} -> ${targetLanguage}`);
+    return true;
+  } catch (error) {
+    console.error('Error saving translation:', error);
+    return false;
   }
 }
 

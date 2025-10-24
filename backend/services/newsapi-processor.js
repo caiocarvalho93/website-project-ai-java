@@ -16,9 +16,9 @@ async function fetchFromNewsDataIO(query = "artificial intelligence", pageSize =
   
   console.log("🔄 Trying NewsData.io with smart country distribution...");
   
-  // Smart strategy: 5 countries × 2 articles each = 10 total (1 API call)
-  const targetCountries = ['us', 'gb', 'de', 'fr', 'ca']; // Top 5 AI countries
-  const articlesPerCountry = 2;
+  // Smart strategy: Rotate through major countries for global coverage
+  const targetCountries = ['us', 'cn', 'gb', 'de', 'fr', 'jp', 'kr', 'in', 'ca', 'br']; // Top 10 AI countries
+  const articlesPerCountry = 1; // 1 article per country to maximize coverage
   const maxSize = Math.min(pageSize, 10); // NewsData.io free plan limit
   
   const url = `https://newsdata.io/api/1/latest?apikey=${process.env.NEWS_API_KEY_FALLBACK}&q=${encodeURIComponent(query)}&language=en&category=technology&country=${targetCountries.join(',')}&size=${maxSize}`;

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Live Language Box Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .demo-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .demo-content h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #ff1493, #ff69b4, #00d4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .demo-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }    
+    /* Pink Transparent Language Box */
+        #language-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            background: linear-gradient(135deg, 
+                rgba(255, 20, 147, 0.25), 
+                rgba(255, 105, 180, 0.2), 
+                rgba(218, 112, 214, 0.25)
+            );
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 3px solid rgba(255, 20, 147, 0.6);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 
+                0 20px 80px rgba(255, 20, 147, 0.6),
+                0 0 40px rgba(255, 20, 147, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.1);
+            z-index: 2147483647;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: white;
+            display: none;
+            animation: boxGlow 2s ease-in-out infinite;
+        }
+
+        #language-box.active {
+            display: block;
+        }
+
+        @keyframes boxGlow {
+            0%, 100% {
+                box-shadow: 
+                    0 20px 80px rgba(255, 20, 147, 0.6),
+                    0 0 40px rgba(255, 20, 147, 0.4),
+                    inset 0 0 20px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    0 20px 100px rgba(255, 20, 147, 0.8),
+                    0 0 60px rgba(255, 20, 147, 0.6),
+                    inset 0 0 30px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .box-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+
+        .toggle-button {
+            background: rgba(255, 20, 147, 0.6);
+            border: 2px solid rgba(255, 20, 147, 0.8);
+            border-radius: 15px;
+            padding: 5px 10px;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-button:hover {
+            background: rgba(255, 20, 147, 0.8);
+            transform: scale(1.05);
+        }   
+     .current-language {
+            background: rgba(255, 20, 147, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            color: white;
+            border: 2px solid rgba(255, 20, 147, 0.5);
+            margin-bottom: 15px;
+        }
+
+        .current-flag {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .current-lang-name {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .status-text {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .lang-flag {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 8px;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lang-flag:hover {
+            background: rgba(255, 20, 147, 0.4);
+            transform: translateY(-2px);
+            border-color: rgba(255, 20, 147, 0.6);
+        }
+
+        .lang-flag.active {
+            background: rgba(255, 20, 147, 0.5);
+            border: 2px solid rgba(255, 20, 147, 0.8);
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.4);
+        }
+
+        .flag-emoji {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .flag-name {
+            font-size: 11px;
+            font-weight: 600;
+        }       
+ /* Toggle Control Button */
+        #toggle-control {
+            position: fixed;
+            top: 20px;
+            right: 360px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.4), rgba(255, 105, 180, 0.5));
+            border: 3px solid rgba(255, 20, 147, 0.8);
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2147483647;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-size: 10px;
+            animation: buttonPulse 2s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        #toggle-control:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% {
+                box-shadow: 0 0 40px rgba(255, 20, 147, 0.8);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 80px rgba(255, 20, 147, 1);
+                transform: scale(1.05);
+            }
+        }
+
+        .control-icon {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        /* Status Indicator */
+        #status-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 20, 147, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 20, 147, 0.5);
+            border-radius: 15px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 2147483647;
+            display: none;
+            animation: indicatorPulse 3s ease-in-out infinite;
+        }
+
+        #status-indicator.active {
+            display: block;
+        }
+
+        @keyframes indicatorPulse {
+            0%, 100% {
+                background: rgba(255, 20, 147, 0.3);
+                transform: scale(1);
+            }
+            50% {
+                background: rgba(255, 20, 147, 0.5);
+                transform: scale(1.02);
+            }
+        }     
+   /* Demo Controls */
+        .demo-controls {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 20, 147, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.6), rgba(0, 212, 255, 0.6));
+            border: 3px solid rgba(255, 20, 147, 0.8);
+            border-radius: 25px;
+            padding: 15px 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 20, 147, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            #language-box {
+                width: 280px;
+                right: 10px;
+                top: 10px;
+            }
+            
+            #toggle-control {
+                right: 300px;
+                top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-content">
+        <h1>🌍 Live Language Box Demo</h1>
+        <p>Experience the pink transparent language box with clickable flags and auto-toggle functionality!</p>
+        
+        <div class="demo-controls">
+            <h3 style="margin-bottom: 20px; color: #ff69b4;">🎮 Demo Controls</h3>
+            <button class="demo-button" onclick="showLanguageBox()">🚀 Show Language Box</button>
+            <button class="demo-button" onclick="hideLanguageBox()">❌ Hide Language Box</button>
+            <button class="demo-button" onclick="selectRandomLanguage()">🎲 Random Language</button>
+        </div>
+    </div> 
+   <!-- Pink Transparent Language Box -->
+    <div id="language-box">
+        <div class="box-header">
+            <h3 class="box-title">🌍 LANGUAGE CONTROL</h3>
+            <button class="toggle-button" onclick="toggleLanguageBox()">✕ CLOSE</button>
+        </div>
+        
+        <div class="current-language">
+            <div class="current-flag" id="current-flag">🇺🇸</div>
+            <div class="current-lang-name" id="current-lang-name">English (Default)</div>
+            <div class="status-text">🔥 Ready for translation</div>
+        </div>
+        
+        <div class="language-grid" id="language-grid">
+            <!-- Languages will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Toggle Control Button -->
+    <div id="toggle-control" onclick="toggleLanguageBox()">
+        <div class="control-icon">🌍</div>
+        <div>LANG</div>
+    </div>
+
+    <!-- Status Indicator -->
+    <div id="status-indicator">
+        🌍 Language Control: <span id="status-text">Active</span>
+    </div>    <script
+>
+        // Language data
+        const languages = [
+            { code: 'en', name: 'English', flag: '🇺🇸' },
+            { code: 'ga', name: 'Gaeilge', flag: '🇮🇪' },
+            { code: 'es', name: 'Español', flag: '🇪🇸' },
+            { code: 'fr', name: 'Français', flag: '🇫🇷' },
+            { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+            { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+            { code: 'pt', name: 'Português', flag: '🇵🇹' },
+            { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+            { code: 'ja', name: '日本語', flag: '🇯🇵' },
+            { code: 'ko', name: '한국어', flag: '🇰🇷' },
+            { code: 'zh', name: '中文', flag: '🇨🇳' },
+            { code: 'ar', name: 'العربية', flag: '🇸🇦' }
+        ];
+
+        let isBoxActive = false;
+        let currentLanguage = 'en';
+
+        // Initialize the language grid
+        function initializeLanguageGrid() {
+            const grid = document.getElementById('language-grid');
+            grid.innerHTML = languages.map(lang => `
+                <div class="lang-flag ${lang.code === 'en' ? 'active' : ''}" 
+                     onclick="selectLanguage('${lang.code}', '${lang.name}', '${lang.flag}')">
+                    <div class="flag-emoji">${lang.flag}</div>
+                    <div class="flag-name">${lang.name}</div>
+                </div>
+            `).join('');
+        }
+
+        // Select a language
+        function selectLanguage(code, name, flag) {
+            currentLanguage = code;
+            
+            // Update current language display
+            document.getElementById('current-flag').textContent = flag;
+            document.getElementById('current-lang-name').textContent = name;
+            
+            // Update active state
+            document.querySelectorAll('.lang-flag').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[onclick*="${code}"]`).classList.add('active');
+            
+            // Auto-activate the box when language is selected
+            if (!isBoxActive) {
+                showLanguageBox();
+            }
+            
+            // Update status
+            document.getElementById('status-text').textContent = `${name} Selected`;
+            
+            // Visual feedback
+            console.log(`🌍 Language selected: ${name} ${flag}`);
+            
+            // Simulate translation activation
+            if (code !== 'en') {
+                document.body.style.filter = 'hue-rotate(10deg)';
+                setTimeout(() => {
+                    document.body.style.filter = 'none';
+                }, 1000);
+            }
+        } 
+       // Show language box
+        function showLanguageBox() {
+            isBoxActive = true;
+            document.getElementById('language-box').classList.add('active');
+            document.getElementById('status-indicator').classList.add('active');
+            console.log('🌍 Language box activated!');
+        }
+
+        // Hide language box
+        function hideLanguageBox() {
+            isBoxActive = false;
+            document.getElementById('language-box').classList.remove('active');
+            document.getElementById('status-indicator').classList.remove('active');
+            console.log('❌ Language box deactivated!');
+        }
+
+        // Toggle language box
+        function toggleLanguageBox() {
+            if (isBoxActive) {
+                hideLanguageBox();
+            } else {
+                showLanguageBox();
+            }
+        }
+
+        // Select random language for demo
+        function selectRandomLanguage() {
+            const randomLang = languages[Math.floor(Math.random() * languages.length)];
+            selectLanguage(randomLang.code, randomLang.name, randomLang.flag);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeLanguageGrid();
+            console.log('🚀 Live Language Box Demo Ready!');
+            console.log('🎯 Features:');
+            console.log('  ✅ Pink transparent box');
+            console.log('  ✅ Clickable flag selection');
+            console.log('  ✅ Auto-toggle on language selection');
+            console.log('  ✅ Beautiful animations');
+            console.log('  ✅ Mobile responsive');
+        });
+
+        // Auto-demo after 3 seconds
+        setTimeout(() => {
+            console.log('🎬 Starting auto-demo...');
+            showLanguageBox();
+            setTimeout(() => {
+                selectLanguage('ga', 'Gaeilge', '🇮🇪');
+            }, 1500);
+        }, 3000);
+    </script>
+</body>
+</html>

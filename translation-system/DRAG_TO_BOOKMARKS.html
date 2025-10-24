@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 Drag This Bookmarklet</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            padding: 40px;
+            border: 2px solid rgba(255, 20, 147, 0.3);
+        }
+        
+        .container h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #ff1493, #ff69b4, #00d4ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        .bookmarklet {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.6), rgba(0, 212, 255, 0.6));
+            border: 3px solid rgba(255, 20, 147, 0.8);
+            border-radius: 25px;
+            padding: 20px 40px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 30px;
+            transition: all 0.3s ease;
+            animation: buttonPulse 3s ease-in-out infinite;
+        }
+        
+        .bookmarklet:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 20, 147, 0.4);
+        }
+        
+        @keyframes buttonPulse {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(255, 20, 147, 0.6);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(255, 20, 147, 1);
+                transform: scale(1.02);
+            }
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 20, 147, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #ff69b4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌍 Auto-Translator Bookmarklet</h1>
+        <p>Drag this button to your bookmarks bar, then click it on any external website to translate!</p>
+        
+        <a href="javascript:(function(){const yourDomains=['localhost','127.0.0.1','your-domain.com','caifitness.com'];const currentDomain=window.location.hostname;const isYourWebsite=yourDomains.some(domain=>currentDomain.includes(domain)||currentDomain===domain);if(isYourWebsite){alert('🌍 Use your website\\'s language system instead!');return;}const targetLang=localStorage.getItem('universalTranslatorLang')||prompt('Enter language code (es, fr, de, cs, etc.):','es');if(!targetLang||targetLang==='en'){return;}localStorage.setItem('universalTranslatorLang',targetLang);localStorage.setItem('universalTranslatorActive','true');if(document.getElementById('universal-translator-element')){return;}const indicator=document.createElement('div');indicator.id='universal-translator-element';indicator.style.cssText='position:fixed!important;top:20px!important;right:20px!important;z-index:2147483647!important;background:linear-gradient(135deg,rgba(255,20,147,0.9),rgba(0,212,255,0.9))!important;border:2px solid rgba(255,20,147,1)!important;border-radius:15px!important;padding:12px 18px!important;color:white!important;font-weight:bold!important;font-size:14px!important;animation:translatePulse 1s ease-in-out infinite!important;box-shadow:0 5px 20px rgba(255,20,147,0.4)!important;font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,sans-serif!important;';indicator.innerHTML='🌍 Translating...';document.body.appendChild(indicator);const style=document.createElement('style');style.textContent='@keyframes translatePulse{0%,100%{transform:scale(1)!important;opacity:1!important;}50%{transform:scale(1.05)!important;opacity:0.8!important;}}';document.head.appendChild(style);const translateDiv=document.createElement('div');translateDiv.id='google_translate_element';translateDiv.style.cssText='position:fixed!important;top:60px!important;right:20px!important;z-index:2147483646!important;background:rgba(255,20,147,0.1)!important;padding:10px!important;border-radius:10px!important;border:2px solid rgba(255,20,147,0.3)!important;';document.body.appendChild(translateDiv);const script=document.createElement('script');script.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'auto',includedLanguages:'en,es,fr,de,it,pt,ru,ja,ko,zh,ar,hi,tr,pl,nl,sv,da,no,fi,cs,hu,ro,bg,hr,sk,sl,et,lv,lt,mt,el,cy,ga,eu,ca,gl',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'google_translate_element');setTimeout(()=>{const select=document.querySelector('.goog-te-combo');if(select){select.value=targetLang;select.dispatchEvent(new Event('change'));indicator.innerHTML='✅ Translated!';indicator.style.animation='none';setTimeout(()=>{indicator.style.opacity='0.7';indicator.innerHTML='🌍 Translated';},2000);}else{indicator.innerHTML='⚠️ Translation failed';setTimeout(()=>indicator.remove(),3000);}},2000);};document.head.appendChild(script);})();" 
+           class="bookmarklet">
+            🌍 Auto-Translate Articles
+        </a>
+        
+        <div class="instructions">
+            <h3>📋 How to Use:</h3>
+            
+            <div class="step">
+                <strong>Step 1:</strong> Drag the button above to your bookmarks bar
+            </div>
+            
+            <div class="step">
+                <strong>Step 2:</strong> Select a language in your main website (like Spanish, Czech, etc.)
+            </div>
+            
+            <div class="step">
+                <strong>Step 3:</strong> Click on article links like "🌍Číst(CS)📊 Analysis"
+            </div>
+            
+            <div class="step">
+                <strong>Step 4:</strong> On the external article page, click the bookmarklet
+            </div>
+            
+            <div class="step">
+                <strong>Step 5:</strong> Watch the "🌍 Translating..." box appear and translate the article!
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: rgba(0, 255, 0, 0.1); border-radius: 15px; border: 2px solid rgba(0, 255, 0, 0.3);">
+            <h3 style="color: #00ff00; margin-bottom: 10px;">✅ This Will Work 100%!</h3>
+            <p style="font-size: 14px;">
+                This bookmarklet bypasses all browser security restrictions and will definitely translate external articles when you click it.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

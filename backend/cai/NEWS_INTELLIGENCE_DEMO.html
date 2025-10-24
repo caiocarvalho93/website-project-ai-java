@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 News Intelligence Bot - Real-Time Economic & AI Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #ffd700, #ffed4e, #fff200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            font-weight: 800;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            color: #e0e0e0;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        .capabilities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .capability {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+
+        .chat-section {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 700px;
+        }
+
+        .chat-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-header h2 {
+            color: #ffd700;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .chat-header p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            margin-bottom: 25px;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            text-align: right;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 20px 20px 5px 20px;
+            display: inline-block;
+            max-width: 75%;
+            box-shadow: 0 4px 20px rgba(79, 172, 254, 0.3);
+            font-weight: 500;
+        }
+
+        .bot-message .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 25px;
+            border-radius: 20px 20px 20px 5px;
+            max-width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            line-height: 1.7;
+        }
+
+        .bot-message .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .analysis-badge {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.4);
+        }
+
+        .news-links {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .news-links h4 {
+            color: #ffd700;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .news-links a {
+            color: #4facfe;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(79, 172, 254, 0.2);
+        }
+
+        .news-links a:hover {
+            color: #00f2fe;
+            text-decoration: underline;
+        }
+
+        .chat-input-area {
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 18px 25px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            resize: none;
+            min-height: 55px;
+            max-height: 150px;
+            font-family: inherit;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .chat-input:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        .analyze-button {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1e3c72;
+            border: none;
+            border-radius: 20px;
+            padding: 18px 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .analyze-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .analyze-button:disabled {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quick-analysis {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .quick-analysis h3 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .quick-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quick-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px 18px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            line-height: 1.4;
+        }
+
+        .quick-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            transform: translateX(5px);
+        }
+
+        .status-bar {
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .analyzing-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .analyzing-dots {
+            display: inline-flex;
+            margin-left: 10px;
+        }
+
+        .analyzing-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffd700;
+            margin: 0 3px;
+            animation: analyzing 1.6s infinite;
+        }
+
+        .analyzing-dots span:nth-child(2) { animation-delay: 0.3s; }
+        .analyzing-dots span:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes analyzing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-12px); opacity: 1; }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: -1;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .capabilities {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .chat-section {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 News Intelligence Bot</h1>
+            <p class="subtitle">Real-Time Economic, Crypto & AI Analysis from Our Database</p>
+            <div class="capabilities">
+                <div class="capability">📊 Economic Trends</div>
+                <div class="capability">₿ Crypto Markets</div>
+                <div class="capability">🤖 AI Developments</div>
+                <div class="capability">⚡ Breaking News</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-section">
+                <div class="chat-header">
+                    <h2>🧠 Live News Intelligence</h2>
+                    <p>Real-time analysis of economic, crypto, and AI news from our database</p>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-header">
+                            📰 News Intelligence Bot
+                            <span class="analysis-badge">SYSTEM READY</span>
+                        </div>
+                        <div class="message-content">
+                            I am a specialized news intelligence system that analyzes ONLY AI, technology, and economic developments from our website's news database.
+                            <br><br>
+                            <strong>My EXCLUSIVE capabilities:</strong>
+                            <br>🤖 AI and artificial intelligence developments from our articles
+                            <br>💻 Technology trends and innovation analysis from our database
+                            <br>📊 Economic implications of AI/tech developments
+                            <br>📰 Breaking tech/AI news analysis from our system
+                            <br><br>
+                            <strong style="color: #ff6b6b;">I CANNOT and WILL NOT:</strong>
+                            <br>❌ Provide general assistance or help with anything
+                            <br>❌ Discuss coding, development, or technical support
+                            <br>❌ Offer file operations, translations, or database help
+                            <br>❌ Engage in casual conversation or personal topics
+                            <br><br>
+                            I am NOT an AI assistant. I am a news analysis tool for our specific database.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <textarea 
+                            class="chat-input" 
+                            id="chatInput" 
+                            placeholder="Request news intelligence analysis... (e.g., 'Analyze latest crypto market trends' or 'What AI developments are impacting the economy?')"
+                            maxlength="1000"
+                            rows="1"
+                        ></textarea>
+                        <button class="analyze-button" id="analyzeButton">Analyze</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="quick-analysis">
+                    <h3>🎯 Quick Analysis</h3>
+                    <div class="quick-buttons">
+                        <button class="quick-btn" onclick="requestAnalysis('What AI developments are in our latest news articles?')">
+                            🤖 Latest AI Developments
+                        </button>
+                        <button class="quick-btn" onclick="requestAnalysis('Analyze technology trends from our news database')">
+                            💻 Technology Trend Analysis
+                        </button>
+                        <button class="quick-btn" onclick="requestAnalysis('What artificial intelligence breakthroughs are reported in our articles?')">
+                            🧠 AI Breakthrough Analysis
+                        </button>
+                        <button class="quick-btn" onclick="requestAnalysis('Economic impact of AI developments from our news')">
+                            📊 AI Economic Impact
+                        </button>
+                        <button class="quick-btn" onclick="requestAnalysis('Technology innovation patterns in our database')">
+                            🔍 Tech Innovation Patterns
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar" id="statusBar">
+            News Intelligence Ready • Session: <span id="sessionId">Loading...</span>
+        </div>
+    </div>
+
+    <script>
+        class NewsIntelligenceBot {
+            constructor() {
+                this.sessionId = this.generateSessionId();
+                this.apiUrl = 'http://localhost:3000/api/website-chat';
+                this.isAnalyzing = false;
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.updateSessionDisplay();
+                this.setupAutoResize();
+            }
+
+            generateSessionId() {
+                return 'news-intel-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            }
+
+            initializeElements() {
+                this.chatMessages = document.getElementById('chatMessages');
+                this.chatInput = document.getElementById('chatInput');
+                this.analyzeButton = document.getElementById('analyzeButton');
+                this.statusBar = document.getElementById('statusBar');
+                this.sessionIdDisplay = document.getElementById('sessionId');
+            }
+
+            setupEventListeners() {
+                this.analyzeButton.addEventListener('click', () => this.analyzeNews());
+                this.chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.analyzeNews();
+                    }
+                });
+            }
+
+            setupAutoResize() {
+                this.chatInput.addEventListener('input', () => {
+                    this.chatInput.style.height = 'auto';
+                    this.chatInput.style.height = Math.min(this.chatInput.scrollHeight, 150) + 'px';
+                });
+            }
+
+            updateSessionDisplay() {
+                this.sessionIdDisplay.textContent = this.sessionId;
+            }
+
+            async analyzeNews(query = null) {
+                const analysisQuery = query || this.chatInput.value.trim();
+                if (!analysisQuery || this.isAnalyzing) return;
+
+                // Add user query to chat
+                this.addMessage(analysisQuery, 'user');
+                if (!query) this.chatInput.value = '';
+                this.setAnalyzing(true);
+
+                try {
+                    const response = await fetch(`${this.apiUrl}/message`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: analysisQuery,
+                            sessionId: this.sessionId
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        this.addMessage(data.response, 'bot', data.analysisType);
+                        this.updateStatus('News intelligence analysis completed');
+                    } else {
+                        this.addMessage(data.response || 'News intelligence systems require recalibration.', 'bot');
+                        this.updateStatus('Analysis error: ' + (data.error || 'Unknown error'), true);
+                    }
+
+                } catch (error) {
+                    console.error('News intelligence error:', error);
+                    this.addMessage('News intelligence matrix temporarily offline. Market analysis algorithms are realigning.', 'bot');
+                    this.updateStatus('Connection error: ' + error.message, true);
+                } finally {
+                    this.setAnalyzing(false);
+                }
+            }
+
+            addMessage(text, sender, analysisType = null) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+
+                if (sender === 'user') {
+                    messageDiv.innerHTML = `<div class="message-content">${this.formatText(text)}</div>`;
+                } else {
+                    const analysisTypeTag = analysisType ? `<span class="analysis-badge">${analysisType.toUpperCase().replace('-', ' ')}</span>` : '';
+                    
+                    // Extract news links if present
+                    const parts = text.split('📰 **Related articles from our database:**');
+                    const mainContent = parts[0];
+                    const newsLinks = parts[1];
+
+                    let newsLinksHtml = '';
+                    if (newsLinks) {
+                        newsLinksHtml = `
+                            <div class="news-links">
+                                <h4>📰 Related articles from our database:</h4>
+                                ${this.formatNewsLinks(newsLinks)}
+                            </div>
+                        `;
+                    }
+
+                    messageDiv.innerHTML = `
+                        <div class="message-header">
+                            📰 News Intelligence Bot
+                            ${analysisTypeTag}
+                        </div>
+                        <div class="message-content">
+                            ${this.formatText(mainContent)}
+                            ${newsLinksHtml}
+                        </div>
+                    `;
+                }
+                
+                this.chatMessages.appendChild(messageDiv);
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+
+            formatText(text) {
+                return text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+            }
+
+            formatNewsLinks(linksText) {
+                return linksText
+                    .split('\n')
+                    .filter(line => line.trim())
+                    .map(line => {
+                        const match = line.match(/\d+\.\s*\[(.*?)\]\((.*?)\)(.*)/);
+                        if (match) {
+                            const [, title, url, extra] = match;
+                            return `<a href="${url}" target="_blank">${title}</a>${extra}`;
+                        }
+                        return line;
+                    })
+                    .join('<br>');
+            }
+
+            setAnalyzing(analyzing) {
+                this.isAnalyzing = analyzing;
+                this.analyzeButton.disabled = analyzing;
+                this.chatInput.disabled = analyzing;
+
+                if (analyzing) {
+                    this.analyzeButton.innerHTML = `
+                        <div class="analyzing-indicator">
+                            Analyzing
+                            <div class="analyzing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    `;
+                    this.updateStatus('News intelligence analysis in progress...');
+                } else {
+                    this.analyzeButton.textContent = 'Analyze';
+                    this.updateStatus('News Intelligence Ready');
+                }
+            }
+
+            updateStatus(message, isError = false) {
+                const statusText = `${message} • Session: ${this.sessionId}`;
+                this.statusBar.innerHTML = statusText;
+                this.statusBar.style.color = isError ? '#ff6b6b' : 'rgba(255, 255, 255, 0.7)';
+            }
+        }
+
+        // Global function for quick analysis buttons
+        function requestAnalysis(query) {
+            window.newsBot.analyzeNews(query);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.newsBot = new NewsIntelligenceBot();
+        });
+    </script>
+</body>
+</html>

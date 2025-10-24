@@ -53,18 +53,18 @@ export default function NewsFeed() {
         allArticles = response;
       }
       
-      // Sort by date (newest first) and limit to 50 most recent
+      // Sort by date (newest first) and limit to 300 most recent
       allArticles.sort((a, b) => {
         const dateA = new Date(a.publishedAt || 0);
         const dateB = new Date(b.publishedAt || 0);
         return dateB.getTime() - dateA.getTime();
       });
       
-      setArticles(allArticles.slice(0, 50));
+      setArticles(allArticles.slice(0, 300));
       setLastUpdate(response.lastUpdate || new Date().toISOString());
       setLoading(false);
       
-      console.log(`📰 NewsFeed: Displaying ${allArticles.slice(0, 50).length} articles`);
+      console.log(`📰 NewsFeed: Displaying ${allArticles.slice(0, 300).length} articles`);
       
     } catch (error) {
       console.warn("Failed to fetch cached news, trying fallback:", error.message);

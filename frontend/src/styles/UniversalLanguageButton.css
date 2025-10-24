@@ -1,0 +1,218 @@
+/* Revolutionary Universal Language Button Styles */
+
+.universal-lang-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Crazy Pink Glow Animations */
+@keyframes pinkGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(255, 20, 147, 0.4),
+      0 0 40px rgba(255, 20, 147, 0.2),
+      inset 0 0 20px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(255, 20, 147, 0.8),
+      0 0 80px rgba(255, 20, 147, 0.4),
+      0 0 120px rgba(255, 20, 147, 0.2),
+      inset 0 0 30px rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.1;
+  }
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: translateY(-15px) rotate(180deg);
+    opacity: 0.6;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes rainbow {
+  0% { filter: hue-rotate(0deg); }
+  25% { filter: hue-rotate(90deg); }
+  50% { filter: hue-rotate(180deg); }
+  75% { filter: hue-rotate(270deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Particle Effects */
+@keyframes particle1 {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100px, -100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes particle2 {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-80px, -120px) rotate(-360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes particle3 {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(60px, 90px) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+/* Hover Effects */
+.universal-lang-button:hover {
+  animation: rainbow 2s linear infinite;
+}
+
+.universal-lang-button:hover::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(45deg, 
+    rgba(255, 20, 147, 0.3),
+    rgba(255, 105, 180, 0.3),
+    rgba(218, 112, 214, 0.3),
+    rgba(255, 20, 147, 0.3)
+  );
+  background-size: 400% 400%;
+  border-radius: 50%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  z-index: -1;
+}
+
+/* Dropdown Animations */
+.lang-dropdown {
+  animation: dropdownSlide 0.3s ease-out;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Language Item Hover */
+.lang-item {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.lang-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.lang-item:hover::before {
+  left: 100%;
+}
+
+.lang-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .universal-lang-button {
+    top: 15px;
+    right: 15px;
+    width: 60px;
+    height: 60px;
+  }
+  
+  .lang-dropdown {
+    width: 280px;
+    right: 15px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .universal-lang-button,
+  .universal-lang-button::before,
+  .lang-item,
+  .lang-item::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .universal-lang-button {
+    border: 3px solid #fff;
+    background: rgba(255, 20, 147, 0.8) !important;
+  }
+  
+  .lang-dropdown {
+    border: 2px solid #fff;
+    background: rgba(0, 0, 0, 0.9) !important;
+  }
+}

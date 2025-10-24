@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌍 Auto-Translate Activator</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          #0f0f23 0%,
+          #1a1a2e 50%,
+          #16213e 100%
+        );
+        min-height: 100vh;
+        color: white;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        max-width: 600px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 25px;
+        padding: 40px;
+        border: 2px solid rgba(255, 20, 147, 0.3);
+      }
+
+      .container h1 {
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, #ff1493, #ff69b4, #00d4ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+      }
+
+      .status {
+        background: rgba(255, 20, 147, 0.2);
+        border: 2px solid rgba(255, 20, 147, 0.5);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .activate-button {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 20, 147, 0.6),
+          rgba(0, 212, 255, 0.6)
+        );
+        border: 3px solid rgba(255, 20, 147, 0.8);
+        border-radius: 25px;
+        padding: 20px 40px;
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        cursor: pointer;
+        margin: 20px;
+        transition: all 0.3s ease;
+        animation: buttonPulse 3s ease-in-out infinite;
+      }
+
+      .activate-button:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 15px 40px rgba(255, 20, 147, 0.4);
+      }
+
+      @keyframes buttonPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 30px rgba(255, 20, 147, 0.6);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 60px rgba(255, 20, 147, 1);
+          transform: scale(1.02);
+        }
+      }
+
+      .instructions {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌍 Auto-Translate Activator</h1>
+
+      <div class="status" id="status">
+        <div id="status-content">Checking translation status...</div>
+      </div>
+
+      <button class="activate-button" onclick="activateAutoTranslation()">
+        🚀 Activate Auto-Translation
+      </button>
+
+      <div class="instructions">
+        <h3>📋 Instructions:</h3>
+        <ol>
+          <li><strong>Select your language</strong> in your main website</li>
+          <li><strong>Click "Activate Auto-Translation"</strong> above</li>
+          <li>
+            <strong>Visit any external website</strong> (news articles, blogs)
+          </li>
+          <li>
+            <strong>The page will auto-translate</strong> to your selected
+            language!
+          </li>
+        </ol>
+      </div>
+
+      <div style="margin-top: 30px; font-size: 14px; opacity: 0.8">
+        <p>
+          This activator ensures translation works on external websites while
+          keeping your own website's language system intact.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Check current translation status
+      function checkStatus() {
+        const isActive =
+          localStorage.getItem("universalTranslatorActive") === "true";
+        const currentLang = localStorage.getItem("universalTranslatorLang");
+        const statusContent = document.getElementById("status-content");
+
+        if (isActive && currentLang && currentLang !== "en") {
+          statusContent.innerHTML = `
+                    <div style="font-size: 18px; margin-bottom: 10px;">✅ Auto-Translation Active</div>
+                    <div>Language: <strong>${currentLang.toUpperCase()}</strong></div>
+                    <div style="font-size: 12px; margin-top: 8px; opacity: 0.8;">
+                        External websites will auto-translate to ${getLanguageName(
+                          currentLang
+                        )}
+                    </div>
+                `;
+          document.querySelector(".activate-button").innerHTML =
+            "🔄 Update Auto-Translation";
+        } else {
+          statusContent.innerHTML = `
+                    <div style="font-size: 18px; margin-bottom: 10px;">❌ Auto-Translation Inactive</div>
+                    <div>Please select a language in your main website first</div>
+                `;
+        }
+      }
+
+      function getLanguageName(code) {
+        const names = {
+          es: "Spanish",
+          fr: "French",
+          de: "German",
+          it: "Italian",
+          pt: "Portuguese",
+          ru: "Russian",
+          ja: "Japanese",
+          ko: "Korean",
+          zh: "Chinese",
+          ar: "Arabic",
+          hi: "Hindi",
+          tr: "Turkish",
+          pl: "Polish",
+          nl: "Dutch",
+          sv: "Swedish",
+          da: "Danish",
+          no: "Norwegian",
+          fi: "Finnish",
+          cs: "Czech",
+          hu: "Hungarian",
+          ro: "Romanian",
+          bg: "Bulgarian",
+          hr: "Croatian",
+          sk: "Slovak",
+          sl: "Slovenian",
+          et: "Estonian",
+          lv: "Latvian",
+          lt: "Lithuanian",
+          mt: "Maltese",
+          el: "Greek",
+          cy: "Welsh",
+          ga: "Irish",
+          eu: "Basque",
+          ca: "Catalan",
+          gl: "Galician",
+        };
+        return names[code] || code.toUpperCase();
+      }
+
+      function activateAutoTranslation() {
+        const currentLang = localStorage.getItem("universalTranslatorLang");
+
+        if (!currentLang || currentLang === "en") {
+          alert("Please select a language in your main website first!");
+          return;
+        }
+
+        // Create the auto-translation script
+        const autoTranslateScript = `
+                (function() {
+                    // Check if we're on an external website
+                    const yourDomains = ['localhost', '127.0.0.1', 'your-domain.com', 'caifitness.com'];
+                    const currentDomain = window.location.hostname;
+                    const isYourWebsite = yourDomains.some(domain => 
+                        currentDomain.includes(domain) || currentDomain === domain
+                    );
+                    
+                    if (isYourWebsite) {
+                        console.log('🌍 Skipping - on your own website');
+                        return;
+                    }
+                    
+                    const targetLang = localStorage.getItem('universalTranslatorLang');
+                    const isActive = localStorage.getItem('universalTranslatorActive');
+                    
+                    if (!isActive || isActive !== 'true' || !targetLang || targetLang === 'en') {
+                        return;
+                    }
+                    
+                    console.log('🌍 Auto-translating to:', targetLang);
+                    
+                    // Check if already translated
+                    if (document.getElementById('universal-translator-element')) {
+                        return;
+                    }
+                    
+                    // Create translation indicator
+                    const indicator = document.createElement('div');
+                    indicator.id = 'universal-translator-element';
+                    indicator.style.cssText = 'position:fixed;top:20px;right:20px;z-index:999999;background:linear-gradient(135deg,rgba(255,20,147,0.9),rgba(0,212,255,0.9));border:2px solid rgba(255,20,147,1);border-radius:15px;padding:12px 18px;color:white;font-weight:bold;font-size:14px;animation:translatePulse 1s ease-in-out infinite;box-shadow:0 5px 20px rgba(255,20,147,0.4);';
+                    indicator.innerHTML = '🌍 Auto-translating...';
+                    document.body.appendChild(indicator);
+                    
+                    // Add animation
+                    const style = document.createElement('style');
+                    style.textContent = '@keyframes translatePulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:0.8;}}';
+                    document.head.appendChild(style);
+                    
+                    // Create Google Translate element
+                    const translateDiv = document.createElement('div');
+                    translateDiv.id = 'google_translate_element';
+                    translateDiv.style.cssText = 'position:fixed;top:60px;right:20px;z-index:999998;background:rgba(255,20,147,0.1);padding:10px;border-radius:10px;border:2px solid rgba(255,20,147,0.3);';
+                    document.body.appendChild(translateDiv);
+                    
+                    // Load Google Translate
+                    const script = document.createElement('script');
+                    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+                    
+                    window.googleTranslateElementInit = function() {
+                        new google.translate.TranslateElement({
+                            pageLanguage: 'auto',
+                            includedLanguages: 'en,es,fr,de,it,pt,ru,ja,ko,zh,ar,hi,tr,pl,nl,sv,da,no,fi,cs,hu,ro,bg,hr,sk,sl,et,lv,lt,mt,el,cy,ga,eu,ca,gl',
+                            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                        }, 'google_translate_element');
+                        
+                        setTimeout(() => {
+                            const select = document.querySelector('.goog-te-combo');
+                            if (select) {
+                                select.value = targetLang;
+                                select.dispatchEvent(new Event('change'));
+                                indicator.innerHTML = '✅ Translated!';
+                                indicator.style.animation = 'none';
+                                setTimeout(() => {
+                                    indicator.style.opacity = '0.7';
+                                    indicator.innerHTML = '🌍 Translated';
+                                }, 2000);
+                            }
+                        }, 2000);
+                    };
+                    
+                    document.head.appendChild(script);
+                })();
+            `;
+
+        // Store the script globally
+        localStorage.setItem("universalTranslatorScript", autoTranslateScript);
+        localStorage.setItem("universalTranslatorActive", "true");
+
+        // Show success message
+        const success = document.createElement("div");
+        success.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, rgba(0, 255, 0, 0.9), rgba(0, 212, 255, 0.9));
+                border: 3px solid rgba(0, 255, 0, 1);
+                border-radius: 20px;
+                padding: 30px 40px;
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+                z-index: 999999;
+                text-align: center;
+                animation: successPulse 2s ease-out;
+            `;
+        success.innerHTML = `
+                <div style="font-size: 32px; margin-bottom: 10px;">🌍</div>
+                <div>Auto-Translation Activated!</div>
+                <div style="font-size: 14px; margin-top: 10px; opacity: 0.9;">
+                    External websites will now auto-translate to ${getLanguageName(
+                      currentLang
+                    )}
+                </div>
+                <div style="font-size: 12px; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                    Now visit any news website or external site to see it in action!
+                </div>
+            `;
+        document.body.appendChild(success);
+
+        setTimeout(() => success.remove(), 5000);
+
+        // Update status
+        setTimeout(checkStatus, 1000);
+      }
+
+      // Check status on page load
+      window.addEventListener("load", checkStatus);
+    </script>
+  </body>
+</html>

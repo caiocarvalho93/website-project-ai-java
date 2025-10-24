@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import TranslatedText from "./TranslatedText";
 
 export default function AILeaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
@@ -146,7 +147,7 @@ export default function AILeaderboard() {
   if (loading) {
     return (
       <div className="container">
-        <div className="loading">Loading AI Leaderboard...</div>
+        <div className="loading"><TranslatedText>Loading AI Leaderboard...</TranslatedText></div>
       </div>
     );
   }
@@ -165,20 +166,20 @@ export default function AILeaderboard() {
           style={{ marginBottom: "2rem" }}
         >
           <div>
-            <div className="heading">🌍 Global AI Leaderboard</div>
+            <div className="heading">🌍 <TranslatedText>Global AI Leaderboard</TranslatedText></div>
             <div className="text-muted">
-              Real-time artificial intelligence dominance rankings
+              <TranslatedText>Real-time artificial intelligence dominance rankings</TranslatedText>
             </div>
           </div>
           <button onClick={() => navigate("/")} className="btn">
-            ← Back to Command Center
+            ← <TranslatedText>Back to Command Center</TranslatedText>
           </button>
         </motion.div>
 
         {/* Leaderboard */}
         <motion.div variants={itemVariants} className="card">
           <div className="subheading" style={{ marginBottom: "1.5rem" }}>
-            Intelligence Rankings • Updated Live
+            <TranslatedText>Intelligence Rankings</TranslatedText> • <TranslatedText>Updated Live</TranslatedText>
           </div>
 
           <div className="grid" style={{ gap: "1rem" }}>
@@ -213,13 +214,13 @@ export default function AILeaderboard() {
                         className="subheading"
                         style={{ marginBottom: "0.25rem" }}
                       >
-                        {country.country}
+                        <TranslatedText>{country.country}</TranslatedText>
                       </div>
                       <div
                         className="text-muted"
                         style={{ fontSize: "0.8rem" }}
                       >
-                        Focus: {country.focus}
+                        <TranslatedText>Focus</TranslatedText>: <TranslatedText>{country.focus}</TranslatedText>
                       </div>
                     </div>
                   </div>
@@ -237,7 +238,7 @@ export default function AILeaderboard() {
                       className="text-muted"
                       style={{ fontSize: "0.75rem", marginTop: "0.25rem" }}
                     >
-                      {country.snarkyComment}
+                      <TranslatedText>{country.snarkyComment}</TranslatedText>
                     </div>
                   </div>
                 </div>
@@ -253,11 +254,11 @@ export default function AILeaderboard() {
           style={{ marginTop: "2rem" }}
         >
           <div className="card">
-            <div className="subheading">Top Performer</div>
+            <div className="subheading"><TranslatedText>Top Performer</TranslatedText></div>
             <div className="flex">
               <span style={{ fontSize: "2rem" }}>{leaderboard[0]?.flag}</span>
               <div>
-                <div className="text-secondary">{leaderboard[0]?.country}</div>
+                <div className="text-secondary"><TranslatedText>{leaderboard[0]?.country}</TranslatedText></div>
                 <div className="badge badge-success">
                   {leaderboard[0]?.score}/100
                 </div>
@@ -266,18 +267,18 @@ export default function AILeaderboard() {
           </div>
 
           <div className="card">
-            <div className="subheading">Rising Star</div>
+            <div className="subheading"><TranslatedText>Rising Star</TranslatedText></div>
             <div className="flex">
               <span style={{ fontSize: "2rem" }}>{leaderboard[8]?.flag}</span>
               <div>
-                <div className="text-secondary">{leaderboard[8]?.country}</div>
-                <div className="badge badge-warning">Rapid Growth</div>
+                <div className="text-secondary"><TranslatedText>{leaderboard[8]?.country}</TranslatedText></div>
+                <div className="badge badge-warning"><TranslatedText>Rapid Growth</TranslatedText></div>
               </div>
             </div>
           </div>
 
           <div className="card">
-            <div className="subheading">Global Average</div>
+            <div className="subheading"><TranslatedText>Global Average</TranslatedText></div>
             <div className="flex-col">
               <div className="badge badge-info">
                 {Array.isArray(leaderboard) && leaderboard.length > 0 ? Math.round(
@@ -286,16 +287,16 @@ export default function AILeaderboard() {
                 ) : 0}
                 /100
               </div>
-              <div className="text-muted">AI Development Score</div>
+              <div className="text-muted"><TranslatedText>AI Development Score</TranslatedText></div>
             </div>
             
             {/* AI Race Game Box */}
             <div style={{ marginTop: "1rem", padding: "1rem", background: "linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 235, 59, 0.1))", borderRadius: "12px", border: "2px solid rgba(255, 193, 7, 0.4)", boxShadow: "0 4px 15px rgba(255, 193, 7, 0.2)" }}>
               <div style={{ fontSize: "1rem", marginBottom: "0.5rem", fontWeight: "700", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                🏁 AI RACE GAME 🏁
+                🏁 <TranslatedText>AI RACE GAME</TranslatedText> 🏁
               </div>
               <div style={{ fontSize: "0.85rem", marginBottom: "0.75rem", color: "var(--text-muted)", fontStyle: "italic" }}>
-                🚀 Help your country win the AI race! Submit quality AI articles to earn points and climb the leaderboard!
+                🚀 <TranslatedText>Help your country win the AI race! Submit quality AI articles to earn points and climb the leaderboard!</TranslatedText>
               </div>
               <div className="flex-col" style={{ gap: "0.5rem" }}>
                 <input 
@@ -446,7 +447,7 @@ export default function AILeaderboard() {
                   }}
                   disabled={!submitUrl}
                 >
-                  🏆 SUBMIT & WIN! (+1-3 pts)
+                  🏆 <TranslatedText>SUBMIT & WIN! (+1-3 pts)</TranslatedText>
                 </button>
                 
                 {/* Game Rules */}
@@ -458,12 +459,12 @@ export default function AILeaderboard() {
                   fontSize: "0.7rem",
                   color: "var(--text-muted)"
                 }}>
-                  <div style={{ fontWeight: "600", marginBottom: "0.25rem" }}>🎮 SCORING RULES:</div>
-                  <div>🥉 Basic AI article: +1 point</div>
-                  <div>🥈 AI-focused URL: +2 points</div>
-                  <div>🥇 Premium source (TechCrunch, Wired, etc.): +3 points</div>
+                  <div style={{ fontWeight: "600", marginBottom: "0.25rem" }}>🎮 <TranslatedText>SCORING RULES</TranslatedText>:</div>
+                  <div>🥉 <TranslatedText>Basic AI article: +1 point</TranslatedText></div>
+                  <div>🥈 <TranslatedText>AI-focused URL: +2 points</TranslatedText></div>
+                  <div>🥇 <TranslatedText>Premium source (TechCrunch, Wired, etc.): +3 points</TranslatedText></div>
                   <div style={{ marginTop: "0.25rem", fontStyle: "italic" }}>
-                    💡 Tip: Quality sources = more points for your country!
+                    💡 <TranslatedText>Tip: Quality sources = more points for your country!</TranslatedText>
                   </div>
                 </div>
               </div>
@@ -478,10 +479,10 @@ export default function AILeaderboard() {
           style={{ marginTop: "2rem" }}
         >
           <button onClick={() => navigate("/ai-fans-race")} className="btn btn-primary">
-            🏁 JOIN AI FANS RACE!
+            🏁 <TranslatedText>JOIN AI FANS RACE!</TranslatedText>
           </button>
           <button onClick={() => navigate("/news")} className="btn">
-            📰 View Global News
+            📰 <TranslatedText>View Global News</TranslatedText>
           </button>
           {/* 🔒 DEVELOPER ONLY: Refresh Rankings (hidden from users)
           <button onClick={() => window.location.reload()} className="btn">
@@ -492,7 +493,7 @@ export default function AILeaderboard() {
             onClick={() => navigate("/country/US")}
             className="btn"
           >
-            🇺🇸 US Intelligence
+            🇺🇸 <TranslatedText>US Intelligence</TranslatedText>
           </button>
         </motion.div>
       </motion.div>

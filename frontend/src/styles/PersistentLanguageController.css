@@ -1,0 +1,318 @@
+/* 🌍 PERSISTENT LANGUAGE CONTROLLER - Enhanced Pink Transparent Box */
+
+/* Global Chrome Language Control Styles */
+.persistent-language-active {
+  position: fixed !important;
+  top: 110px !important;
+  right: 20px !important;
+  z-index: 1001 !important;
+  background: linear-gradient(135deg, 
+    rgba(255, 20, 147, 0.25), 
+    rgba(255, 105, 180, 0.2), 
+    rgba(218, 112, 214, 0.25)
+  ) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 3px solid rgba(255, 20, 147, 0.6) !important;
+  border-radius: 20px !important;
+  box-shadow: 
+    0 20px 80px rgba(255, 20, 147, 0.6),
+    0 0 40px rgba(255, 20, 147, 0.4),
+    inset 0 0 20px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Enhanced Glow Animations for Persistent Mode */
+@keyframes persistentGlow {
+  0%, 100% {
+    box-shadow: 
+      0 0 40px rgba(255, 20, 147, 0.8),
+      0 0 80px rgba(255, 20, 147, 0.4),
+      0 0 120px rgba(255, 20, 147, 0.2),
+      inset 0 0 30px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 0 60px rgba(255, 20, 147, 1),
+      0 0 120px rgba(255, 20, 147, 0.6),
+      0 0 180px rgba(255, 20, 147, 0.3),
+      inset 0 0 40px rgba(255, 255, 255, 0.3);
+  }
+}
+
+@keyframes livePulse {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.4;
+  }
+  50% { 
+    transform: translate(-50%, -50%) scale(1.4);
+    opacity: 0.1;
+  }
+}
+
+@keyframes chromeControlIndicator {
+  0%, 100% {
+    background: rgba(255, 20, 147, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    background: rgba(255, 20, 147, 0.6);
+    transform: scale(1.05);
+  }
+}
+
+/* Persistent Button States */
+.persistent-button {
+  animation: persistentGlow 2s ease-in-out infinite !important;
+}
+
+.persistent-button::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 96px;
+  height: 96px;
+  border: 3px solid transparent;
+  border-top: 3px solid rgba(255, 20, 147, 1);
+  border-right: 3px solid rgba(255, 105, 180, 0.8);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Chrome Language Control Indicator */
+.chrome-language-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 20, 147, 0.3);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 20, 147, 0.5);
+  border-radius: 15px;
+  padding: 10px 15px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1000;
+  animation: chromeControlIndicator 3s ease-in-out infinite;
+}
+
+/* Enhanced Language Box Styles */
+.persistent-language-box {
+  background: linear-gradient(135deg, 
+    rgba(255, 20, 147, 0.25), 
+    rgba(255, 105, 180, 0.2), 
+    rgba(218, 112, 214, 0.25)
+  ) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 3px solid rgba(255, 20, 147, 0.6) !important;
+  box-shadow: 
+    0 20px 80px rgba(255, 20, 147, 0.6),
+    0 0 40px rgba(255, 20, 147, 0.4),
+    inset 0 0 20px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Language Selection Enhancements */
+.language-item-persistent {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.language-item-persistent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent
+  );
+  transition: left 0.6s;
+}
+
+.language-item-persistent:hover::before {
+  left: 100%;
+}
+
+.language-item-persistent:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4);
+}
+
+.language-item-active {
+  background: rgba(255, 20, 147, 0.5) !important;
+  border: 2px solid rgba(255, 20, 147, 0.8) !important;
+  animation: activeLanguagePulse 2s ease-in-out infinite;
+}
+
+@keyframes activeLanguagePulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(255, 20, 147, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(255, 20, 147, 0.8);
+  }
+}
+
+/* Toggle Button Styles */
+.persistent-toggle {
+  background: rgba(255, 20, 147, 0.6) !important;
+  border: 2px solid rgba(255, 20, 147, 0.8) !important;
+  animation: toggleGlow 2s ease-in-out infinite;
+}
+
+@keyframes toggleGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 20, 147, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 20, 147, 0.8);
+  }
+}
+
+/* Status Indicator */
+.chrome-status-indicator {
+  background: rgba(255, 20, 147, 0.3) !important;
+  border: 2px solid rgba(255, 20, 147, 0.5) !important;
+  animation: statusPulse 3s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    background: rgba(255, 20, 147, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    background: rgba(255, 20, 147, 0.5);
+    transform: scale(1.02);
+  }
+}
+
+/* Enhanced Particle Effects for Persistent Mode */
+.persistent-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.persistent-particles::before,
+.persistent-particles::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: persistentParticle1 4s ease-out infinite;
+}
+
+.persistent-particles::after {
+  animation: persistentParticle2 3s ease-out infinite 1s;
+  background: rgba(255, 20, 147, 0.9);
+}
+
+@keyframes persistentParticle1 {
+  0% {
+    top: 20%;
+    right: 20%;
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    top: -10%;
+    right: -10%;
+    opacity: 0;
+    transform: scale(0.5) rotate(360deg);
+  }
+}
+
+@keyframes persistentParticle2 {
+  0% {
+    bottom: 30%;
+    left: 15%;
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    bottom: -10%;
+    left: -10%;
+    opacity: 0;
+    transform: scale(0.3) rotate(-360deg);
+  }
+}
+
+/* Responsive Design for Persistent Mode */
+@media (max-width: 768px) {
+  .persistent-language-box {
+    width: 320px !important;
+    right: 15px !important;
+    top: 100px !important;
+  }
+  
+  .chrome-language-indicator {
+    bottom: 15px;
+    right: 15px;
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .persistent-language-box {
+    width: 280px !important;
+    right: 10px !important;
+    top: 90px !important;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .persistent-language-box {
+    background: rgba(255, 20, 147, 0.9) !important;
+    border: 3px solid #fff !important;
+  }
+  
+  .chrome-language-indicator {
+    background: rgba(255, 20, 147, 0.9) !important;
+    border: 2px solid #fff !important;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .persistent-button,
+  .persistent-language-box,
+  .chrome-language-indicator,
+  .language-item-persistent,
+  .persistent-toggle {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Custom Scrollbar for Persistent Box */
+.persistent-language-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.persistent-language-box::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.persistent-language-box::-webkit-scrollbar-thumb {
+  background: rgba(255, 20, 147, 0.6);
+  border-radius: 4px;
+}
+
+.persistent-language-box::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 20, 147, 0.8);
+}

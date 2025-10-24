@@ -14,6 +14,10 @@ let processLiveNews,
   generateAIIntelligenceReport,
   GlobalNewsScraper;
 
+// Import route handlers
+import translationRoutes from './routes/translation-routes.js';
+import websiteChatRoutes from './routes/website-chat-routes.js';
+
 // Import cache manager
 let getCachedNewsByCountry,
   getAllCachedNews,
@@ -128,6 +132,10 @@ app.options("*", cors());
 
 app.use(express.json());
 
+// Mount route handlers
+app.use('/api/translation', translationRoutes);
+app.use('/api/website-chat', websiteChatRoutes);
+
 const scraper = new GlobalNewsScraper();
 
 // EINSTEIN-LEVEL: Enhanced health check with uptime and memory
@@ -191,7 +199,38 @@ app.get("/api/test", async (req, res) => {
 // DEPLOYMENT TEST: Verify all countries have cached news
 app.get("/api/deployment-test", async (_, res) => {
   try {
-    const countries = ["US", "DE", "GB", "FR", "CA", "JP", "IN", "KR", "ES"];
+    const countries = [
+      "US",
+      "CN",
+      "GB",
+      "DE",
+      "FR",
+      "JP",
+      "KR",
+      "IN",
+      "CA",
+      "BR",
+      "ES",
+      "IT",
+      "AU",
+      "NL",
+      "CH",
+      "SE",
+      "NO",
+      "DK",
+      "FI",
+      "SG",
+      "HK",
+      "TW",
+      "TH",
+      "MY",
+      "ID",
+      "PH",
+      "VN",
+      "MX",
+      "AR",
+      "CL",
+    ]; // 30 COUNTRIES FOR GLOBAL COVERAGE
     const results = {};
     let totalArticles = 0;
 
@@ -318,78 +357,144 @@ app.get("/api/global-news", async (_, res) => {
   }
 });
 
-// 🎯 COUNTRY-SPECIFIC NEWS WITH FRESH NEWSAPI DATA
+// 🎯 COUNTRY-SPECIFIC NEWS - DATABASE ONLY (NO API CALLS)
 app.get("/api/country-news/:country", async (req, res) => {
   try {
     const country = req.params.country.toUpperCase();
-    console.log(`📡 Fetching news for ${country} with fresh data check...`);
+    console.log(`📡 Fetching news for ${country} from database only...`);
 
     // Get articles from database first
     const { getArticles } = await import("./database.js");
-    let articles = await getArticles(country, 20);
+    let articles = await getArticles(country, 300);
 
-    console.log(`📊 Found ${articles.length} cached articles for ${country}`);
+    console.log(`📊 Found ${articles.length} direct articles for ${country}`);
 
-    // If we have very few articles for this country, try to fetch fresh ones
-    if (articles.length < 3) {
+    // SMART FILTERING: If country has no direct articles, filter from ALL database articles
+    if (articles.length === 0) {
       console.log(
-        `🔄 ${country}: Low article count, fetching fresh from NewsAPI...`
+        `🔍 ${country}: No direct articles, using smart filtering from database...`
       );
 
       try {
-        // Country code mapping for NewsAPI
-        const countryCodeMap = {
-          US: "us",
-          DE: "de",
-          GB: "gb",
-          FR: "fr",
-          CA: "ca",
-          JP: "jp",
-          IN: "in",
-          KR: "kr",
-          ES: "es",
+        // Get ALL articles from database for filtering
+        const allArticles = await getArticles(null, 500);
+        console.log(`📊 Total articles in database: ${allArticles.length}`);
+
+        // Country-specific keywords for smart filtering
+        const countryKeywords = {
+          IN: [
+            "india",
+            "indian",
+            "mumbai",
+            "delhi",
+            "bangalore",
+            "tata",
+            "infosys",
+            "wipro",
+            "reliance",
+          ],
+          BR: [
+            "brazil",
+            "brazilian",
+            "sao paulo",
+            "rio",
+            "petrobras",
+            "vale",
+            "itau",
+          ],
+          IT: ["italy", "italian", "rome", "milan", "ferrari", "fiat", "eni"],
+          AU: [
+            "australia",
+            "australian",
+            "sydney",
+            "melbourne",
+            "commonwealth bank",
+            "bhp",
+          ],
+          NL: ["netherlands", "dutch", "amsterdam", "philips", "shell", "asml"],
+          CH: [
+            "switzerland",
+            "swiss",
+            "zurich",
+            "geneva",
+            "nestle",
+            "novartis",
+            "roche",
+          ],
+          SE: [
+            "sweden",
+            "swedish",
+            "stockholm",
+            "volvo",
+            "ericsson",
+            "spotify",
+            "ikea",
+          ],
+          NO: ["norway", "norwegian", "oslo", "equinor", "telenor"],
+          DK: ["denmark", "danish", "copenhagen", "novo nordisk", "maersk"],
+          FI: ["finland", "finnish", "helsinki", "nokia", "kone"],
+          SG: ["singapore", "singaporean", "dbs", "singtel"],
+          HK: ["hong kong", "hongkong"],
+          TW: ["taiwan", "taiwanese", "taipei", "tsmc", "foxconn"],
+          TH: ["thailand", "thai", "bangkok"],
+          MY: ["malaysia", "malaysian", "kuala lumpur"],
+          ID: ["indonesia", "indonesian", "jakarta"],
+          PH: ["philippines", "filipino", "manila"],
+          VN: ["vietnam", "vietnamese", "ho chi minh"],
+          MX: ["mexico", "mexican", "mexico city", "pemex", "america movil"],
+          AR: ["argentina", "argentinian", "buenos aires"],
+          CL: ["chile", "chilean", "santiago"],
+          CN: [
+            "china",
+            "chinese",
+            "beijing",
+            "shanghai",
+            "shenzhen",
+            "alibaba",
+            "tencent",
+            "huawei",
+            "xiaomi",
+            "baidu",
+            "bytedance",
+            "tiktok",
+            "wechat",
+          ],
         };
 
-        const newsApiCountry = countryCodeMap[country];
+        const keywords = countryKeywords[country] || [country.toLowerCase()];
 
-        if (process.env.NEWS_API_KEY) {
-          console.log(`🔄 ${country}: Fetching fresh articles from NewsAPI...`);
+        // Filter articles by country keywords
+        const filteredArticles = allArticles.filter((article) => {
+          const title = article.title?.toLowerCase() || "";
+          const description = article.description?.toLowerCase() || "";
+          const content = title + " " + description;
 
-          try {
-            const { fetchNewsAPIArticles } = await import(
-              "./services/newsapi-processor.js"
-            );
-            const freshArticles = await fetchNewsAPIArticles(
-              "artificial intelligence",
-              5
-            );
+          return keywords.some((keyword) => content.includes(keyword));
+        });
 
-            if (freshArticles.length > 0) {
-              const processedArticles = freshArticles.map((article) => ({
-                ...article,
-                country: country,
-                id: `fresh-${country}-${Date.now()}-${Math.random()
-                  .toString(36)
-                  .substr(2, 9)}`,
-              }));
-
-              const { saveArticlesToDatabase } = await import("./database.js");
-              await saveArticlesToDatabase(processedArticles);
-
-              articles = await getArticles(country, 20);
-              console.log(
-                `✅ ${country}: Saved ${freshArticles.length} fresh articles, now has ${articles.length} total`
-              );
-            }
-          } catch (fetchError) {
-            console.warn(
-              `⚠️ ${country}: Fresh fetch failed:`,
-              fetchError.message
-            );
-          }
+        // If still no matches, show general AI/tech articles
+        if (filteredArticles.length === 0) {
+          console.log(
+            `🔄 ${country}: No keyword matches, showing general AI articles`
+          );
+          articles = allArticles
+            .filter(
+              (article) =>
+                article.category === "ai" || article.category === "technology"
+            )
+            .slice(0, 15);
+        } else {
+          articles = filteredArticles.slice(0, 20);
         }
-      } catch (fetchError) {
-        console.warn(`⚠️ ${country}: Fresh fetch failed:`, fetchError.message);
+
+        console.log(
+          `✅ ${country}: Smart filtering found ${articles.length} relevant articles`
+        );
+      } catch (filterError) {
+        console.warn(
+          `⚠️ ${country}: Smart filtering failed:`,
+          filterError.message
+        );
       }
     }
 
@@ -399,22 +504,220 @@ app.get("/api/country-news/:country", async (req, res) => {
       country: country,
       articles: articles,
       count: articles.length,
-      source: articles.length > 0 ? "database-with-fresh-check" : "no-articles",
+      source: "database-only",
       lastUpdate: new Date().toISOString(),
-      apiKey: process.env.NEWS_API_KEY ? "CONFIGURED" : "MISSING",
+      apiKey: "NOT_NEEDED",
     });
 
-    console.log(`✅ ${country}: Served ${articles.length} articles`);
+    console.log(
+      `✅ ${country}: Served ${articles.length} articles from database`
+    );
   } catch (error) {
     console.error(
       `❌ Country news failed for ${req.params.country}:`,
       error.message
     );
 
-    // NO FAKE CONTENT - Return empty if failed
     res.json({
       success: false,
       country: req.params.country.toUpperCase(),
+      articles: [],
+      count: 0,
+      source: "error",
+      error: error.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+// 🌍 UNIVERSAL LANGUAGES - Direct routes (temporary fix)
+app.get("/api/languages", async (req, res) => {
+  try {
+    const { getSupportedLanguages } = await import(
+      "./services/translation-service.js"
+    );
+    const result = getSupportedLanguages();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.post("/api/translate", async (req, res) => {
+  try {
+    const { translateText } = await import("./services/translation-service.js");
+    const { text, targetLanguage, sourceLanguage = "en" } = req.body;
+
+    if (!text || !targetLanguage) {
+      return res.status(400).json({
+        success: false,
+        error: "Text and target language are required",
+      });
+    }
+
+    const result = await translateText(text, targetLanguage, sourceLanguage);
+    res.json(result);
+  } catch (error) {
+    console.error("❌ Translation API failed:", error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// 🌍 BATCH TRANSLATE - Revolutionary feature for translating multiple texts
+app.post("/api/translate/batch", async (req, res) => {
+  try {
+    const { batchTranslate } = await import(
+      "./services/translation-service.js"
+    );
+    const { texts, targetLanguage, sourceLanguage = "en" } = req.body;
+
+    if (!texts || !Array.isArray(texts) || !targetLanguage) {
+      return res.status(400).json({
+        success: false,
+        error: "Texts array and target language are required",
+      });
+    }
+
+    const results = await batchTranslate(texts, targetLanguage, sourceLanguage);
+
+    res.json({
+      success: true,
+      results,
+      total: results.length,
+      successful: results.filter((r) => r.success).length,
+      failed: results.filter((r) => !r.success).length,
+    });
+  } catch (error) {
+    console.error("❌ Batch translation failed:", error.message);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// 🚀 STARTUP NEWS - Use service
+app.get("/api/startup-news", async (req, res) => {
+  try {
+    const { getStartupNews } = await import(
+      "./services/startup-news-service.js"
+    );
+    const result = await getStartupNews();
+    res.json(result);
+  } catch (error) {
+    console.error("❌ Startup news failed:", error.message);
+    res.status(500).json({
+      success: false,
+      articles: [],
+      error: error.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+// 🇨🇳 CHINA AI SUPERPOWER - REAL CHINA-SPECIFIC NEWS ENDPOINT
+app.get("/api/china-news", async (req, res) => {
+  try {
+    console.log("🇨🇳 Fetching REAL China AI news...");
+
+    // Get all articles from database
+    const { getArticles } = await import("./database.js");
+    const allArticles = await getArticles(null, 1000); // Get more articles to filter from
+
+    // REAL China filtering - look for genuine China-related content
+    const chinaKeywords = [
+      "china",
+      "chinese",
+      "beijing",
+      "shanghai",
+      "shenzhen",
+      "guangzhou",
+      "alibaba",
+      "tencent",
+      "baidu",
+      "huawei",
+      "xiaomi",
+      "bytedance",
+      "tiktok",
+      "wechat",
+      "ant group",
+      "didi",
+      "meituan",
+      "jd.com",
+      "pinduoduo",
+      "nio",
+      "byd",
+      "xpeng",
+      "li auto",
+      "pdd holdings",
+      "netease",
+      "bilibili",
+      "weibo",
+      "sina",
+      "sohu",
+      "qihoo",
+      "hong kong",
+      "macau",
+      "taiwan",
+      "mainland china",
+      "greater china",
+    ];
+
+    const chinaArticles = allArticles.filter((article) => {
+      const title = article.title?.toLowerCase() || "";
+      const description = article.description?.toLowerCase() || "";
+      const content = title + " " + description;
+
+      return chinaKeywords.some((keyword) => content.includes(keyword));
+    });
+
+    // Sort by relevance and date
+    const sortedArticles = chinaArticles
+      .sort((a, b) => {
+        // Prioritize articles with China in title
+        const aHasChinaInTitle =
+          a.title?.toLowerCase().includes("china") ||
+          a.title?.toLowerCase().includes("chinese");
+        const bHasChinaInTitle =
+          b.title?.toLowerCase().includes("china") ||
+          b.title?.toLowerCase().includes("chinese");
+
+        if (aHasChinaInTitle && !bHasChinaInTitle) return -1;
+        if (!aHasChinaInTitle && bHasChinaInTitle) return 1;
+
+        // Then by date
+        const dateA = new Date(a.publishedAt || a.published_at || 0);
+        const dateB = new Date(b.publishedAt || b.published_at || 0);
+        return dateB - dateA;
+      })
+      .slice(0, 20); // Top 20 most relevant China articles
+
+    console.log(`🇨🇳 Found ${sortedArticles.length} REAL China articles`);
+
+    res.json({
+      success: true,
+      country: "CN",
+      articles: sortedArticles.map((article) => ({
+        ...article,
+        country: "CN", // Mark as China articles
+        category: article.category || "ai",
+      })),
+      count: sortedArticles.length,
+      source: "china-specific-filter",
+      lastUpdate: new Date().toISOString(),
+      apiKey: process.env.NEWS_API_KEY ? "CONFIGURED" : "MISSING",
+    });
+  } catch (error) {
+    console.error("❌ China news failed:", error.message);
+    res.status(500).json({
+      success: false,
+      country: "CN",
       articles: [],
       count: 0,
       source: "error",
@@ -1108,9 +1411,9 @@ const server = app.listen(PORT, async () => {
         // Check if we need fresh news (deployment scenario)
         try {
           const { getArticles } = await import("./database.js");
-          const existingArticles = await getArticles(null, 10);
+          const existingArticles = await getArticles(null, null);
 
-          if (existingArticles.length < 5) {
+          if (existingArticles.length < 100) {
             console.log(
               "🔄 DEPLOYMENT: Fetching fresh news from Mediastack..."
             );
@@ -1120,8 +1423,29 @@ const server = app.listen(PORT, async () => {
               process.env.NEWSDATA_API_KEY &&
               process.env.NEWSDATA_API_KEY !== "your_newsdata_key_here"
             ) {
-              // Fetch fresh news for deployment
-              const countries = ["us", "gb", "de", "fr", "ca"];
+              // Fetch fresh news for deployment - GLOBAL COVERAGE
+              const countries = [
+                "us",
+                "cn",
+                "gb",
+                "de",
+                "fr",
+                "jp",
+                "kr",
+                "in",
+                "ca",
+                "br",
+                "es",
+                "it",
+                "au",
+                "nl",
+                "ch",
+                "se",
+                "no",
+                "dk",
+                "fi",
+                "sg",
+              ]; // 20 MAJOR COUNTRIES
               const allFreshArticles = [];
 
               for (const countryCode of countries) {
@@ -1614,7 +1938,38 @@ app.post("/api/setup-database", async (_, res) => {
       }
 
       // Migrate articles
-      const countries = ["US", "DE", "GB", "FR", "CA", "JP", "IN", "KR", "ES"];
+      const countries = [
+        "US",
+        "CN",
+        "GB",
+        "DE",
+        "FR",
+        "JP",
+        "KR",
+        "IN",
+        "CA",
+        "BR",
+        "ES",
+        "IT",
+        "AU",
+        "NL",
+        "CH",
+        "SE",
+        "NO",
+        "DK",
+        "FI",
+        "SG",
+        "HK",
+        "TW",
+        "TH",
+        "MY",
+        "ID",
+        "PH",
+        "VN",
+        "MX",
+        "AR",
+        "CL",
+      ]; // 30 COUNTRIES FOR GLOBAL COVERAGE
       for (const country of countries) {
         try {
           const articlesData = await fs.readFile(
