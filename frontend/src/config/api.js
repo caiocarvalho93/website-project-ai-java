@@ -15,8 +15,13 @@ const API_BASE = (() => {
     return "https://website-project-ai-production.up.railway.app";
   }
   
-  // 3. Local development
-  return "http://localhost:3000";
+  // 3. Local development (aligns with Vite proxy -> Spring Boot on 8080)
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+
+  // 4. Fallback for non-browser environments
+  return "http://localhost:8080";
 })();
 
 console.log("🔗 API Base URL:", API_BASE);

@@ -33,11 +33,16 @@ public class NewsApiClient {
         String requestUrl = baseUrl.endsWith("/") ? baseUrl + "top-headlines" : baseUrl + "/top-headlines";
 
         RawResponse raw = restClient.get()
-                .uri(requestUrl + "?country=" + countryCode + "&pageSize=50")
+                .uri(uriBuilder -> uriBuilder
+                        .uri(URI.create(requestUrl))
+                        .queryParam("country", countryCode)
+                        .queryParam("pageSize", 50)
+                        .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .header("X-Api-Key", apiKey)
                 .retrieve()
                 .body(RawResponse.class);
+
         if (raw == null || raw.articles() == null) {
             return CountryNewsResponse.builder()
                     .country(countryCode)

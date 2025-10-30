@@ -12,15 +12,18 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -104,7 +107,7 @@ public class ArticleStorageService {
         entity.setPublishedAt(dto.getPublishedAt());
         entity.setDescription(dto.getDescription());
         entity.setContent(StringUtils.hasText(dto.getContent()) ? dto.getContent() : dto.getDescription());
-        entity.setCountry(country);
+        entity.setCountry(StringUtils.hasText(country) ? country.toUpperCase(Locale.ENGLISH) : null);
         entity.setCategory(dto.getCategory());
         entity.setRelevanceScore(normalizeScore(dto.getRelevanceScore()));
         entity.setAnalysisScore(normalizeScore(dto.getAnalysisScore()));
@@ -176,6 +179,57 @@ public class ArticleStorageService {
         }
 
         newsSourceRepository.save(source);
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<ArticleEntity> fetchLatestArticles(int limit) {
+        int size = limit != null && limit > 0 ? limit : 50;
+        return articleRepository.findAllByOrderByPublishedAtDesc(PageRequest.of(0, size));
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<ArticleEntity> fetchLatestArticlesForCountry(String country, int limit) {
+        int size = limit > 0 ? limit : 20;
+        return articleRepository.findByCountryIgnoreCaseOrderByPublishedAtDesc(country, PageRequest.of(0, size));
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public List<ArticleEntity> fetchRecentArticlesAcrossCountries(int limit) {
+        int size = limit > 0 ? limit : 100;
+        return articleRepository.findAllByOrderByPublishedAtDesc(PageRequest.of(0, size));
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public OffsetDateTime findMostRecentUpdate() {
+        return articleRepository.findFirstByOrderByUpdatedAtDesc()
+                .map(ArticleEntity::getUpdatedAt)
+                .or(() -> articleRepository.findFirstByOrderByPublishedAtDesc().map(ArticleEntity::getPublishedAt))
+                .orElse(null);
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public long countByCountry(String country) {
+        return articleRepository.countByCountryIgnoreCase(country);
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public long totalArticleCount() {
+        return articleRepository.count();
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public long distinctSourceCount() {
+        return articleRepository.countDistinctSources();
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public Double averageRelevanceScore() {
+        return articleRepository.averageRelevanceScore();
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public Double averageAnalysisScore() {
+        return articleRepository.averageAnalysisScore();
     }
 
     private String generateIdentifier(StoredArticleDto dto) {
